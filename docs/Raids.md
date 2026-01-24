@@ -126,5 +126,5 @@
 
 | Field       | Type     | Description
 |------------ |--------- |---------------------
-| **`name`**  | `string` | The name of the weather type.<br />Can be `sunnyclear`, `rainy`, `partly`, `cloudy`, `windy`, `snow`, `fog`
+| **`name`**  | `string` | The name of the weather type.<br />Can be `sunny`, `partly cloudy`, `cloudy`, `rainy`, `windy`, `snow`, `fog`
 | **`image`** | `string` | The image of the weather type.

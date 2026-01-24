@@ -46,12 +46,28 @@
     ]
 }
 ```
+
+## Example Research Object without Type
+
+```json
+{
+    "text": "Defeat a Team GO Rocket Grunt",
+    "rewards": [
+        {
+            "type": "item",
+            "name": "Mysterious Component",
+            "quantity": 1,
+            "image": "https://cdn.leekduck.com/assets/img/items/Mysterious%20Component.png"
+        }
+    ]
+}
+```
 # Fields
 
 | Field         | Type     | Description
 |-------------- |--------- |---------------------
 | **`text`**    | `string` | The research task text.
-| **`type`**    | `string` | The type of research.<br />Can be `event`, `catch`, `throw`, `battle`, `explore`, `training`, `rocket`, `buddy`, `ar`, `sponsored`
+| **`type`**    | `string` (optional) | The type of research.<br />Can be `event`, `catch`, `throw`, `battle`, `explore`, `training`, `rocket`, `buddy`, `ar`, `sponsored`<br />Note: This field is optional and may not be present in all research objects.
 | **`rewards`** | `Reward` | The rewards for completing the research Task. See [Reward](#Reward)
 
 # Other Objects
