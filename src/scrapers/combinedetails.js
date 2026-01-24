@@ -27,6 +27,20 @@ function main()
                         data.type == "pokemon-spotlight-hour" ||
                         data.type == "community-day" ||
                         data.type == "raid-battles" ||
+                        data.type == "raid-hour" ||
+                        data.type == "raid-day" ||
+                        data.type == "team-go-rocket" ||
+                        data.type == "go-rocket-takeover" ||
+                        data.type == "go-battle-league" ||
+                        data.type == "season" ||
+                        data.type == "pokemon-go-tour" ||
+                        data.type == "timed-research" ||
+                        data.type == "special-research" ||
+                        data.type == "max-battles" ||
+                        data.type == "max-mondays" ||
+                        data.type == "go-pass" ||
+                        data.type == "pokestop-showcase" ||
+                        data.type == "event" ||
                         data.type == "promo-codes")
                     {
                         Object.assign(e, data.data);

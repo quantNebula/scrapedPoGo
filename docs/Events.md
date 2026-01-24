@@ -11,7 +11,6 @@
     "name": "Kyogre Raid Hour",
     "eventType": "raid-hour",
     "heading": "Raid Hour",
-    "link": "https://www.leekduck.com/events/legendaryraidhour20220601/",
     "image": "https://www.leekduck.com/assets/img/events/raidhour.jpg",
     "start": "2022-06-01T18:00:00.000",
     "end": "2022-06-01T19:00:00.000",
@@ -27,7 +26,6 @@
 | **`name`**      | `string` | The name of the event.
 | **`eventType`** | `string` | The type of the event. See [List of Event Types](#list-of-event-types)
 | **`heading`**   | `string` | The heading for the event. Based on the event's type.
-| **`link`**                     | `string`  | The URL to the event's page.
 | **`image`**                    | `string`  | The header/thumbnail image for the event.
 | **`start`**                    | `string`  | The start date of the event (Can be null). See [Note for Start/End dates](#note-for-startend-dates)
 | **`end`**                      | `string`  | The end date of the event (Can be null). See [Note for Start/End dates](#note-for-startend-dates)

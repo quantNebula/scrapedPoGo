@@ -76,7 +76,7 @@ function get()
                                 end = "" + new Date(Date.parse(end)).toISOString();
                             }
         
-                            allEvents.push({ "eventID": eventID, "name": name, "eventType": eventType, "heading": heading, "link": link, "image": image, "start": start, "end": end });
+                            allEvents.push({ "eventID": eventID, "name": name, "eventType": eventType, "heading": heading, "image": image, "start": start, "end": end });
                         });
                     });
         

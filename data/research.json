@@ -1,6 +1,7 @@
 [
     {
         "text": "Defeat a Team GO Rocket Grunt",
+        "type": "rocket",
         "rewards": [
             {
                 "type": "item",
@@ -12,6 +13,7 @@
     },
     {
         "text": "Purify 3 Shadow Pokémon",
+        "type": "rocket",
         "rewards": [
             {
                 "type": "item",
@@ -29,6 +31,7 @@
     },
     {
         "text": "Earn a Candy exploring with your buddy",
+        "type": "buddy",
         "rewards": [
             {
                 "type": "encounter",
@@ -44,6 +47,7 @@
     },
     {
         "text": "Give your buddy 1 treats",
+        "type": "buddy",
         "rewards": [
             {
                 "type": "item",
@@ -67,6 +71,7 @@
     },
     {
         "text": "Take a snapshot of your buddy",
+        "type": "buddy",
         "rewards": [
             {
                 "type": "encounter",
@@ -96,6 +101,36 @@
                 "combatPower": {
                     "min": 244,
                     "max": 272
+                }
+            },
+            {
+                "type": "encounter",
+                "name": "Trapinch",
+                "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm328.icon.png",
+                "canBeShiny": true,
+                "combatPower": {
+                    "min": 507,
+                    "max": 546
+                }
+            },
+            {
+                "type": "encounter",
+                "name": "Axew",
+                "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm610.icon.png",
+                "canBeShiny": true,
+                "combatPower": {
+                    "min": 547,
+                    "max": 586
+                }
+            },
+            {
+                "type": "encounter",
+                "name": "Noibat",
+                "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm714.icon.png",
+                "canBeShiny": true,
+                "combatPower": {
+                    "min": 258,
+                    "max": 285
                 }
             }
         ]
@@ -2182,42 +2217,6 @@
                 "combatPower": {
                     "min": 322,
                     "max": 353
-                }
-            }
-        ]
-    },
-    {
-        "text": "Take a snapshot of your buddy",
-        "type": "buddy",
-        "rewards": [
-            {
-                "type": "encounter",
-                "name": "Trapinch",
-                "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm328.icon.png",
-                "canBeShiny": true,
-                "combatPower": {
-                    "min": 507,
-                    "max": 546
-                }
-            },
-            {
-                "type": "encounter",
-                "name": "Axew",
-                "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm610.icon.png",
-                "canBeShiny": true,
-                "combatPower": {
-                    "min": 547,
-                    "max": 586
-                }
-            },
-            {
-                "type": "encounter",
-                "name": "Noibat",
-                "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm714.icon.png",
-                "canBeShiny": true,
-                "combatPower": {
-                    "min": 258,
-                    "max": 285
                 }
             }
         ]

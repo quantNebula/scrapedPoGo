@@ -48,11 +48,11 @@
 ```
 # Fields
 
-| Field         | Type     | Description
-|-------------- |--------- |---------------------
-| **`text`**    | `string` | The research task text.
-| **`type`**    | `string` | The type of research.<br />Can be `event`, `catch`, `throw`, `battle`, `explore`, `training`, `rocket`, `buddy`, `ar`, `sponsored`
-| **`rewards`** | `Reward` | The rewards for completing the research Task. See [Reward](#Reward)
+| Field         | Type            | Description
+|-------------- |---------------- |---------------------
+| **`text`**    | `string`        | The research task text.
+| **`type`**    | `string\|null`  | The type of research (optional).<br />Can be `event`, `catch`, `throw`, `battle`, `explore`, `training`, `rocket`, `buddy`, `ar`, `sponsored`, or `null` if not specified
+| **`rewards`** | `Reward`        | The rewards for completing the research Task. See [Reward](#Reward)
 
 # Other Objects
 

@@ -7,6 +7,18 @@ const communityday = require('../pages/detailed/communityday')
 const raidbattles = require('../pages/detailed/raidbattles')
 const research = require('../pages/detailed/research')
 const generic = require('../pages/detailed/generic')
+const raidhour = require('../pages/detailed/raidhour')
+const raidday = require('../pages/detailed/raidday')
+const teamgorocket = require('../pages/detailed/teamgorocket')
+const gobattleleague = require('../pages/detailed/gobattleleague')
+const season = require('../pages/detailed/season')
+const gotour = require('../pages/detailed/gotour')
+const timedresearch = require('../pages/detailed/timedresearch')
+const maxbattles = require('../pages/detailed/maxbattles')
+const maxmondays = require('../pages/detailed/maxmondays')
+const gopass = require('../pages/detailed/gopass')
+const pokestopshowcase = require('../pages/detailed/pokestopshowcase')
+const event = require('../pages/detailed/event')
 
 function main()
 {
@@ -26,28 +38,79 @@ function main()
                 let bkp = JSON.parse(body);
 
                 events.forEach(e => {
+                    // Construct the event link from eventID
+                    const link = `https://www.leekduck.com/events/${e.eventID}/`;
+                    
                     // get generic extra data independend from event type
-                    generic.get(e.link, e.eventID, bkp);
+                    generic.get(link, e.eventID, bkp);
                     // get event type specific extra data
                     if (e.eventType == "research-breakthrough")
                     {
-                        breakthrough.get(e.link, e.eventID, bkp);
+                        breakthrough.get(link, e.eventID, bkp);
                     }
                     else if (e.eventType == "pokemon-spotlight-hour")
                     {
-                        spotlight.get(e.link, e.eventID, bkp);
+                        spotlight.get(link, e.eventID, bkp);
                     }
                     else if (e.eventType == "community-day")
                     {
-                        communityday.get(e.link, e.eventID, bkp);
+                        communityday.get(link, e.eventID, bkp);
                     }
                     else if (e.eventType == "raid-battles")
                     {
-                        raidbattles.get(e.link, e.eventID, bkp);
+                        raidbattles.get(link, e.eventID, bkp);
+                    }
+                    else if (e.eventType == "raid-hour")
+                    {
+                        raidhour.get(link, e.eventID, bkp);
+                    }
+                    else if (e.eventType == "raid-day")
+                    {
+                        raidday.get(link, e.eventID, bkp);
+                    }
+                    else if (e.eventType == "team-go-rocket" || e.eventType == "go-rocket-takeover")
+                    {
+                        teamgorocket.get(link, e.eventID, bkp);
+                    }
+                    else if (e.eventType == "go-battle-league")
+                    {
+                        gobattleleague.get(link, e.eventID, bkp);
+                    }
+                    else if (e.eventType == "season")
+                    {
+                        season.get(link, e.eventID, bkp);
+                    }
+                    else if (e.eventType == "pokemon-go-tour")
+                    {
+                        gotour.get(link, e.eventID, bkp);
+                    }
+                    else if (e.eventType == "timed-research" || e.eventType == "special-research")
+                    {
+                        timedresearch.get(link, e.eventID, bkp);
+                    }
+                    else if (e.eventType == "max-battles")
+                    {
+                        maxbattles.get(link, e.eventID, bkp);
+                    }
+                    else if (e.eventType == "max-mondays")
+                    {
+                        maxmondays.get(link, e.eventID, bkp);
+                    }
+                    else if (e.eventType == "go-pass")
+                    {
+                        gopass.get(link, e.eventID, bkp);
+                    }
+                    else if (e.eventType == "pokestop-showcase")
+                    {
+                        pokestopshowcase.get(link, e.eventID, bkp);
                     }
                     else if (e.eventType == "research")
                     {
-                        research.get(e.link, e.eventID, bkp);
+                        research.get(link, e.eventID, bkp);
+                    }
+                    else if (e.eventType == "event")
+                    {
+                        event.get(link, e.eventID, bkp);
                     }
                 });
             }

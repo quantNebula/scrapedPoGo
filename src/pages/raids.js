@@ -5,6 +5,61 @@ const https = require('https');
 const { loadShinyData, extractDexNumber, hasShiny } = require('../utils/shinyData');
 
 /**
+ * Determines event status for a raid boss by checking events data
+ * @param {string} bossName - Name of the raid boss
+ * @param {boolean} isShadowRaid - Whether this is a shadow raid
+ * @returns {string} - "ongoing", "upcoming", "inactive", or "unknown"
+ */
+function determineEventStatus(bossName, isShadowRaid) {
+    try {
+        // Try to load events data
+        if (!fs.existsSync('data/events.min.json')) {
+            return 'unknown';
+        }
+        
+        const eventsData = JSON.parse(fs.readFileSync('data/events.min.json', 'utf8'));
+        const now = new Date();
+        
+        // Look for raid-related events that match this boss
+        for (const event of eventsData) {
+            // Check if event is raid-related
+            if (!['raid-battles', 'raid-hour', 'raid-day'].includes(event.eventType)) {
+                continue;
+            }
+            
+            // Check if event mentions this boss
+            const eventNameLower = event.name.toLowerCase();
+            const bossNameLower = bossName.toLowerCase();
+            
+            // Special handling for forms (e.g., "Thundurus" matches "Thundurus (Incarnate)")
+            const bossBaseName = bossNameLower.split('(')[0].trim();
+            
+            if (eventNameLower.includes(bossBaseName)) {
+                const startDate = event.start ? new Date(event.start) : null;
+                const endDate = event.end ? new Date(event.end) : null;
+                
+                // Determine status based on dates
+                if (startDate && endDate) {
+                    if (now >= startDate && now <= endDate) {
+                        return 'ongoing';
+                    } else if (now < startDate) {
+                        return 'upcoming';
+                    } else if (now > endDate) {
+                        return 'inactive';
+                    }
+                }
+            }
+        }
+        
+        // If no matching event found, return unknown
+        return 'unknown';
+    } catch (error) {
+        console.error('Error determining event status:', error.message);
+        return 'unknown';
+    }
+}
+
+/**
  * Parses form from Pokemon name (e.g., "Giratina (Origin Forme)" -> "Origin Forme")
  * @param {string} name 
  * @returns {string|null}
@@ -48,23 +103,6 @@ function get() {
                 // Load shiny data for cross-referencing
                 const shinyMap = loadShinyData();
                 
-                // Get event status from dropdown selector
-                const selectedOption = dom.window.document.querySelector('.custom-dropdown-option.selected');
-                let eventStatus = 'unknown';
-                if (selectedOption) {
-                    const statusBadge = selectedOption.querySelector('.status-badge');
-                    if (statusBadge) {
-                        const statusText = statusBadge.textContent.trim().toLowerCase();
-                        if (statusText.includes('ongoing') || statusText.includes('active')) {
-                            eventStatus = 'ongoing';
-                        } else if (statusText.includes('upcoming')) {
-                            eventStatus = 'upcoming';
-                        } else if (statusText.includes('inactive') || statusText.includes('ended')) {
-                            eventStatus = 'inactive';
-                        }
-                    }
-                }
-                
                 const raidBosses = dom.window.document.querySelectorAll('.raid-bosses, .shadow-raid-bosses');
 
                 raidBosses.forEach(raidBossContainer => {
@@ -89,7 +127,7 @@ function get() {
                                 gender: parseGender(rawName),
                                 tier: currentTier,
                                 isShadowRaid: isShadowRaid,
-                                eventStatus: eventStatus,
+                                eventStatus: 'unknown', // Will be determined below
                                 canBeShiny: false,
                                 types: [],
                                 combatPower: {
@@ -99,6 +137,9 @@ function get() {
                                 boostedWeather: [],
                                 image: ""
                             };
+                            
+                            // Determine event status based on events data
+                            boss.eventStatus = determineEventStatus(boss.name, isShadowRaid);
 
                             // Image
                             boss.image = card.querySelector('.boss-img img')?.src || "";

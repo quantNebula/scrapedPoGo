@@ -245,7 +245,7 @@
         "gender": null,
         "tier": "5-Star Raids",
         "isShadowRaid": false,
-        "eventStatus": "unknown",
+        "eventStatus": "ongoing",
         "canBeShiny": true,
         "types": [
             {
@@ -286,7 +286,7 @@
         "gender": null,
         "tier": "Mega Raids",
         "isShadowRaid": false,
-        "eventStatus": "unknown",
+        "eventStatus": "ongoing",
         "canBeShiny": true,
         "types": [
             {
@@ -582,7 +582,7 @@
         "gender": null,
         "tier": "5-Star Raids",
         "isShadowRaid": true,
-        "eventStatus": "unknown",
+        "eventStatus": "ongoing",
         "canBeShiny": true,
         "types": [
             {

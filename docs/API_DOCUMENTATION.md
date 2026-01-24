@@ -1,26 +1,9 @@
 # scrapedPoGo API - Consolidated Documentation
 
 > **Purpose**: This document provides complete API documentation for all scrapedPoGo endpoints in a single file, suitable for LLM context or offline reference. No external file traversal required.
-
-**Data Source**: [LeekDuck.com](https://leekduck.com)  
+ 
 **Last Documentation Update**: January 2026
 
----
-
-## Table of Contents
-
-1. [Overview](#overview)
-2. [Quick Reference - All Endpoints](#quick-reference---all-endpoints)
-3. [Events Endpoint](#events-endpoint)
-4. [Raids Endpoint](#raids-endpoint)
-5. [Research Endpoint](#research-endpoint)
-6. [Eggs Endpoint](#eggs-endpoint)
-7. [Rocket Lineups Endpoint](#rocket-lineups-endpoint)
-8. [Shinies Endpoint](#shinies-endpoint)
-9. [Common Data Types](#common-data-types)
-10. [Usage Examples](#usage-examples)
-
----
 
 ## Overview
 
@@ -64,7 +47,6 @@ https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/
     "name": "Kyogre Raid Hour",
     "eventType": "raid-hour",
     "heading": "Raid Hour",
-    "link": "https://www.leekduck.com/events/legendaryraidhour20220601/",
     "image": "https://www.leekduck.com/assets/img/events/raidhour.jpg",
     "start": "2022-06-01T18:00:00.000",
     "end": "2022-06-01T19:00:00.000",
@@ -81,7 +63,6 @@ https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/
 | `name` | `string` | The name of the event. |
 | `eventType` | `string` | The type of the event. See [List of Event Types](#list-of-event-types). |
 | `heading` | `string` | The heading for the event. Based on the event's type. |
-| `link` | `string` | The URL to the event's page. |
 | `image` | `string` | The header/thumbnail image for the event. |
 | `start` | `string\|null` | The start date of the event. See [Date Format Notes](#date-format-notes). |
 | `end` | `string\|null` | The end date of the event. See [Date Format Notes](#date-format-notes). |

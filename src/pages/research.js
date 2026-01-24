@@ -4,6 +4,69 @@ const { JSDOM } = jsd;
 const https = require('https');
 const { loadShinyData, extractDexNumber, hasShiny } = require('../utils/shinyData');
 
+/**
+ * Infers task type from task text if category type is not available
+ * @param {string} text - The task text
+ * @returns {string|null} - The inferred type or null
+ */
+function inferTaskType(text) {
+    const lowerText = text.toLowerCase();
+    
+    // Rocket tasks
+    if (lowerText.includes('team go rocket') || lowerText.includes('grunt') || 
+        lowerText.includes('purify') || lowerText.includes('shadow')) {
+        return 'rocket';
+    }
+    
+    // Buddy tasks
+    if (lowerText.includes('buddy') || lowerText.includes('walking with your buddy') ||
+        lowerText.includes('hearts with your buddy') || lowerText.includes('treats')) {
+        return 'buddy';
+    }
+    
+    // Catch tasks
+    if (lowerText.includes('catch ')) {
+        return 'catch';
+    }
+    
+    // Throw tasks
+    if (lowerText.includes('throw') || lowerText.includes('curveball')) {
+        return 'throw';
+    }
+    
+    // Battle tasks
+    if (lowerText.includes('battle') || lowerText.includes('raid') || lowerText.includes('win ')) {
+        return 'battle';
+    }
+    
+    // Explore tasks
+    if (lowerText.includes('hatch') || lowerText.includes('egg') || 
+        lowerText.includes('spin') || lowerText.includes('pokéstop') ||
+        lowerText.includes('explore') || lowerText.includes('km') ||
+        lowerText.includes('snapshot of a wild')) {
+        return 'explore';
+    }
+    
+    // Training tasks
+    if (lowerText.includes('evolve') || lowerText.includes('power up') ||
+        lowerText.includes('mega evolve') || lowerText.includes('earn') ||
+        lowerText.includes('xp') || lowerText.includes('stardust')) {
+        return 'training';
+    }
+    
+    // AR tasks
+    if (lowerText.includes('ar scanning')) {
+        return 'ar';
+    }
+    
+    // Sponsored tasks
+    if (lowerText.includes('send') && lowerText.includes('gift')) {
+        return 'sponsored';
+    }
+    
+    return null;
+}
+
 function get()
 {
     return new Promise(resolve => {
@@ -21,7 +84,8 @@ function get()
             taskNameToID["Exploring Tasks"] = "explore";
             taskNameToID["Training Tasks"] = "training";
             taskNameToID["Team GO Rocket Tasks"] = "rocket";
-            taskNameToID["Buddy &amp; Friendship Tasks"] = "buddy";
+            taskNameToID["Buddy & Friendship Tasks"] = "buddy";
+            taskNameToID["Buddy &amp; Friendship Tasks"] = "buddy"; // Handle HTML entity
             taskNameToID["AR Scanning Tasks"] = "ar";
             taskNameToID["Sponsored Tasks"] = "sponsored";
 
@@ -38,7 +102,7 @@ function get()
                 
                 _e.querySelectorAll(":scope > .task-list > .task-item").forEach(task => {
                     var text = task.querySelector(":scope > .task-text").innerHTML.trim();
-                    var type = categoryType;
+                    var type = categoryType || inferTaskType(text);
 
                     var rewards = [];
                     
