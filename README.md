@@ -1,4 +1,4 @@
-# ScrapedDuck
+# scrapedPoGo
 
 A comprehensive web scraper for Pokémon GO event data from [LeekDuck.com](https://leekduck.com).
 
