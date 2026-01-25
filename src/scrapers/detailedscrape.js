@@ -79,6 +79,8 @@ function main()
         });
     }
 
+    const promises = [];
+
     https.get("https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/events.min.json", (res) =>
     {
         let body = "";
@@ -110,76 +112,83 @@ function main()
                     const link = `https://www.leekduck.com/events/${e.eventID}/`;
                     
                     // get generic extra data independend from event type
-                    generic.get(link, e.eventID, bkp);
+                    promises.push(generic.get(link, e.eventID, bkp));
                     // get event type specific extra data
                     if (e.eventType == "research-breakthrough")
                     {
-                        breakthrough.get(link, e.eventID, bkp);
+                        promises.push(breakthrough.get(link, e.eventID, bkp));
                     }
                     else if (e.eventType == "pokemon-spotlight-hour")
                     {
-                        spotlight.get(link, e.eventID, bkp);
+                        promises.push(spotlight.get(link, e.eventID, bkp));
                     }
                     else if (e.eventType == "community-day")
                     {
-                        communityday.get(link, e.eventID, bkp);
+                        promises.push(communityday.get(link, e.eventID, bkp));
                     }
                     else if (e.eventType == "raid-battles")
                     {
-                        raidbattles.get(link, e.eventID, bkp);
+                        promises.push(raidbattles.get(link, e.eventID, bkp));
                     }
                     else if (e.eventType == "raid-hour")
                     {
-                        raidhour.get(link, e.eventID, bkp);
+                        promises.push(raidhour.get(link, e.eventID, bkp));
                     }
                     else if (e.eventType == "raid-day")
                     {
-                        raidday.get(link, e.eventID, bkp);
+                        promises.push(raidday.get(link, e.eventID, bkp));
                     }
                     else if (e.eventType == "team-go-rocket" || e.eventType == "go-rocket-takeover")
                     {
-                        teamgorocket.get(link, e.eventID, bkp);
+                        promises.push(teamgorocket.get(link, e.eventID, bkp));
                     }
                     else if (e.eventType == "go-battle-league")
                     {
-                        gobattleleague.get(link, e.eventID, bkp);
+                        promises.push(gobattleleague.get(link, e.eventID, bkp));
                     }
                     else if (e.eventType == "season")
                     {
-                        season.get(link, e.eventID, bkp);
+                        promises.push(season.get(link, e.eventID, bkp));
                     }
                     else if (e.eventType == "pokemon-go-tour")
                     {
-                        gotour.get(link, e.eventID, bkp);
+                        promises.push(gotour.get(link, e.eventID, bkp));
                     }
                     else if (e.eventType == "timed-research" || e.eventType == "special-research")
                     {
-                        timedresearch.get(link, e.eventID, bkp);
+                        promises.push(timedresearch.get(link, e.eventID, bkp));
                     }
                     else if (e.eventType == "max-battles")
                     {
-                        maxbattles.get(link, e.eventID, bkp);
+                        promises.push(maxbattles.get(link, e.eventID, bkp));
                     }
                     else if (e.eventType == "max-mondays")
                     {
-                        maxmondays.get(link, e.eventID, bkp);
+                        promises.push(maxmondays.get(link, e.eventID, bkp));
                     }
                     else if (e.eventType == "go-pass")
                     {
-                        gopass.get(link, e.eventID, bkp);
+                        promises.push(gopass.get(link, e.eventID, bkp));
                     }
                     else if (e.eventType == "pokestop-showcase")
                     {
-                        pokestopshowcase.get(link, e.eventID, bkp);
+                        promises.push(pokestopshowcase.get(link, e.eventID, bkp));
                     }
                     else if (e.eventType == "research")
                     {
-                        research.get(link, e.eventID, bkp);
+                        promises.push(research.get(link, e.eventID, bkp));
                     }
                     else if (e.eventType == "event")
                     {
-                        event.get(link, e.eventID, bkp);
+                        promises.push(event.get(link, e.eventID, bkp));
                     }
+                });
+                
+                // Wait for all scrapers to complete
+                Promise.all(promises).then(() => {
+                    console.log(`Completed scraping ${promises.length} detailed event pages`);
+                }).catch(err => {
+                    console.error('Error during detailed scraping:', err.message);
                 });
             }
             catch (error)

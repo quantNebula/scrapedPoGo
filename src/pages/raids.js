@@ -72,8 +72,20 @@ function determineEventStatus(bossName, isShadowRaid) {
         const eventsData = JSON.parse(fs.readFileSync('data/events.min.json', 'utf8'));
         const now = new Date();
         
+        // Flatten eventType-keyed structure into array if needed
+        let events = [];
+        if (Array.isArray(eventsData)) {
+            events = eventsData;
+        } else if (eventsData && typeof eventsData === 'object') {
+            Object.values(eventsData).forEach(typeArray => {
+                if (Array.isArray(typeArray)) {
+                    events = events.concat(typeArray);
+                }
+            });
+        }
+        
         // Look for raid-related events that match this boss
-        for (const event of eventsData) {
+        for (const event of events) {
             // Check if event is raid-related
             if (!['raid-battles', 'raid-hour', 'raid-day'].includes(event.eventType)) {
                 continue;

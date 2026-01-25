@@ -1,7 +1,7 @@
 /**
  * @fileoverview GO Pass event scraper.
- * Extracts GO Pass season information including tier rewards,
- * point tasks, milestone bonuses, and pricing tiers.
+ * Extracts GO Pass season information including rank-by-rank rewards,
+ * point tasks, milestone bonuses, featured Pokemon, and pricing tiers.
  * @module pages/detailed/gopass
  */
 
@@ -16,32 +16,10 @@ const {
 } = require('../../utils/scraperUtils');
 
 /**
- * @typedef {Object} PointTask
- * @property {string} task - Task description
- * @property {number} points - Points awarded for completion
- */
-
-/**
- * @typedef {Object} MilestoneBonus
- * @property {string} tier - Tier identifier (e.g., "Tier 1 - Rank 5")
- * @property {string} bonus - Bonus description
- */
-
-/**
- * @typedef {Object} GOPassData
- * @property {string} description - GO Pass overview description
- * @property {{deluxe: number|null, deluxePlus: number|null}} pricing - Pricing in USD
- * @property {Object[]} tiers - Tier progression information
- * @property {PointTask[]} pointTasks - Tasks that award points
- * @property {{free: Array, deluxe: Array}} rewards - Rewards by tier
- * @property {MilestoneBonus[]} milestoneBonuses - Milestone completion bonuses
- */
-
-/**
  * Scrapes GO Pass event data from LeekDuck.
- * Extracts comprehensive GO Pass information including tier bonuses,
- * point tasks with their values, rewards for free and deluxe tiers,
- * and milestone bonuses.
+ * Extracts comprehensive GO Pass information including rank-by-rank rewards,
+ * point tasks with their values, featured Pokemon encounters,
+ * and milestone bonuses with pricing information.
  * 
  * @async
  * @function get
@@ -52,7 +30,7 @@ const {
  * @throws {Error} Falls back to backup data on failure
  * 
  * @example
- * await get('https://leekduck.com/events/go-pass-season-1/', 'go-pass-season-1', backupData);
+ * await get('https://leekduck.com/events/go-pass-january-2026/', 'go-pass-january-2026', backupData);
  */
 async function get(url, id, bkp) {
     try {
@@ -65,91 +43,141 @@ async function get(url, id, bkp) {
                 deluxe: null,
                 deluxePlus: null
             },
-            tiers: [],
-            pointTasks: [],
-            rewards: {
+            ranks: [],
+            pointTasks: {
+                daily: [],
+                weekly: [],
+                bonus: []
+            },
+            featuredPokemon: [],
+            milestoneBonuses: {
                 free: [],
                 deluxe: []
-            },
-            milestoneBonuses: []
+            }
         };
 
+        // Extract pricing from paragraphs
+        const allParagraphs = doc.querySelectorAll('p');
+        allParagraphs.forEach(p => {
+            const text = p.textContent;
+            if (text.includes('US$') && text.includes('Deluxe')) {
+                const priceInfo = extractPrice(text);
+                if (priceInfo) {
+                    if (text.includes('10 Ranks') || text.includes('+')) {
+                        goPassData.pricing.deluxePlus = priceInfo.price;
+                    } else if (!goPassData.pricing.deluxe) {
+                        goPassData.pricing.deluxe = priceInfo.price;
+                    }
+                }
+            }
+            // Description
+            if (text.includes('GO Pass') && text.includes('rank up') && !goPassData.description) {
+                goPassData.description = text;
+            }
+        });
+
+        // Extract point tasks
         const sections = getSectionHeaders(doc);
-        
         for (const sectionId of sections) {
-            if (sectionId === 'leek-duck' || sectionId === 'graphic') continue;
-
-            const sectionContent = await extractSection(doc, sectionId);
-
-            // GO Pass description/point tasks
             if (sectionId === 'go-pass') {
-                sectionContent.paragraphs.forEach(p => {
-                    if (!goPassData.description) goPassData.description = p;
-                });
+                const sectionContent = await extractSection(doc, sectionId);
                 sectionContent.lists.forEach(list => {
                     list.forEach(item => {
                         const ptsMatch = item.match(/(.+?)\s*-\s*(\d+)\s*PTS/i);
                         if (ptsMatch) {
-                            goPassData.pointTasks.push({
+                            const task = {
                                 task: ptsMatch[1].trim(),
                                 points: parseInt(ptsMatch[2])
-                            });
+                            };
+                            // Categorize tasks
+                            if (item.toLowerCase().includes('daily')) {
+                                goPassData.pointTasks.daily.push(task);
+                            } else if (item.toLowerCase().includes('weekly') || 
+                                      sectionContent.paragraphs.some(p => p.toLowerCase().includes('weekly'))) {
+                                goPassData.pointTasks.weekly.push(task);
+                            } else {
+                                goPassData.pointTasks.bonus.push(task);
+                            }
                         }
                     });
                 });
             }
 
-            // Pricing info
-            if (sectionId.includes('go-pass') && sectionId.includes('deluxe')) {
-                sectionContent.paragraphs.forEach(p => {
-                    const priceInfo = extractPrice(p);
-                    if (priceInfo) {
-                        if (sectionId.includes('10-ranks') || p.includes('10 Ranks')) {
-                            goPassData.pricing.deluxePlus = priceInfo.price;
-                        } else {
-                            goPassData.pricing.deluxe = priceInfo.price;
-                        }
-                    }
-                });
-            }
-
-            // Rewards
-            if (sectionId.includes('reward') || sectionId.includes('featured')) {
-                sectionContent.lists.forEach(list => {
-                    list.forEach(item => {
-                        if (item.includes('Deluxe') || item.includes('upgrade')) {
-                            goPassData.rewards.deluxe.push(item);
-                        } else {
-                            goPassData.rewards.free.push(item);
-                        }
-                    });
-                });
-                sectionContent.pokemon.forEach(p => {
-                    goPassData.rewards.free.push(p);
-                });
+            // Featured Pokemon
+            if (sectionId.includes('featured') && sectionId.includes('pokemon')) {
+                const sectionContent = await extractSection(doc, sectionId);
+                goPassData.featuredPokemon = sectionContent.pokemon;
             }
 
             // Milestone bonuses
             if (sectionId.includes('milestone')) {
+                const sectionContent = await extractSection(doc, sectionId);
                 let currentTier = '';
+                let isDeluxe = false;
+                
                 sectionContent.paragraphs.forEach(p => {
                     const tierMatch = p.match(/Tier\s*(\d+)\s*[–-]\s*Rank\s*(\d+)/i);
                     if (tierMatch) {
                         currentTier = `Tier ${tierMatch[1]} - Rank ${tierMatch[2]}`;
                     }
+                    if (p.toLowerCase().includes('deluxe')) {
+                        isDeluxe = true;
+                    }
                 });
+                
                 sectionContent.lists.forEach(list => {
                     list.forEach(item => {
-                        goPassData.milestoneBonuses.push({
+                        const bonus = {
                             tier: currentTier,
                             bonus: item
-                        });
+                        };
+                        if (isDeluxe) {
+                            goPassData.milestoneBonuses.deluxe.push(bonus);
+                        } else {
+                            goPassData.milestoneBonuses.free.push(bonus);
+                        }
                     });
                 });
             }
         }
 
-        if (goPassData.pointTasks.length > 0 || goPassData.rewards.free.length > 0) {
+        // Extract rank rewards from the reward table
+        const rewardTable = doc.querySelector('.gopass-ranks, .pass-rewards');
+        if (rewardTable) {
+            const ranks = rewardTable.querySelectorAll('.rank-row, [class*="rank"]');
+            ranks.forEach(rankRow => {
+                const rankText = rankRow.textContent;
+                const rankMatch = rankText.match(/RANK\s*(\d+)/i);
+                if (rankMatch) {
+                    const rank = parseInt(rankMatch[1]);
+                    const rewards = {
+                        rank: rank,
+                        free: [],
+                        deluxe: []
+                    };
+                    
+                    // Extract reward items from the rank row
+                    const rewardItems = rankRow.querySelectorAll('img, .reward-label');
+                    rewardItems.forEach(item => {
+                        const rewardText = item.textContent || item.alt || item.title;
+                        if (rewardText) {
+                            // Determine if free or deluxe based on column position
+                            // This is a simplified heuristic
+                            rewards.free.push(rewardText.trim());
+                        }
+                    });
+                    
+                    if (rewards.free.length > 0 || rewards.deluxe.length > 0) {
+                        goPassData.ranks.push(rewards);
+                    }
+                }
+            });
+        }
+
+        if (goPassData.pointTasks.daily.length > 0 || 
+            goPassData.pricing.deluxe || 
+            goPassData.featuredPokemon.length > 0 ||
+            goPassData.ranks.length > 0) {
             writeTempFile(id, 'go-pass', goPassData);
         }
     } catch (err) {

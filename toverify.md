@@ -1,0 +1,18 @@
+# Pokémon GO Events to verify
+
+- [x] [Mega Ampharos in Mega Raids (January 2026)](https://leekduck.com/events/mega-ampharos-in-mega-raids-january-2026/)
+- [x] [Tornadus (Incarnate Forme) in 5-Star Raid Battles (January 2026)](https://leekduck.com/events/tornadus-incarnate-forme-in-5-star-raid-battles-january-2026/)
+- [x] [GO Battle League: Precious Paths – Great League & Ultra Premier](https://leekduck.com/events/gbl-precious-paths_great-league_ultra-premier/)
+- [x] [Shadow Cresselia in Shadow Raids (January–February 2026)](https://leekduck.com/events/shadow-cresselia-in-shadow-raids-january-february-2026/)
+- [x] [Pokémon Showcase: Ultra Buddy or Higher](https://leekduck.com/events/pokemon-showcase-ultra-buddy-or-higher/)
+- [x] [Precious Pals 2026](https://leekduck.com/events/precious-pals-2026/)
+- [x] [Precious Pals: Taken Over 2026](https://leekduck.com/events/precious-pals-taken-over-2026/)
+- [x] [Masterwork Research: A Precious Catch](https://leekduck.com/events/masterwork-research-a-precious-catch/)
+- [x] [Season 21: Precious Paths](https://leekduck.com/events/season-21-precious-paths/)
+- [x] [Max Mondays (January 26, 2026)](https://leekduck.com/events/max-mondays-2026-01-26/)
+- [x] [GO Battle League: Precious Paths – Great, Ultra, & Master League Split 3](https://leekduck.com/events/gbl-precious-paths_great-league_ultra-league_master-league-split-3/)
+- [x] [Pokémon Spotlight Hour (January 27, 2026)](https://leekduck.com/events/pokemonspotlighthour2026-01-27/)
+- [x] [Raid Hour (January 28, 2026)](https://leekduck.com/events/raidhour20260128/)
+- [x] [Dynamax Ho-Oh Max Battle Weekend](https://leekduck.com/events/dynamax-ho-oh-max-battle-weekend/)
+- [x] [February Community Day 2026](https://leekduck.com/events/february-communityday2026/)
+- [x] [Carnival of Flamigo](https://leekduck.com/events/carnival-of-flamigo/)

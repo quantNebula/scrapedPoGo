@@ -66,34 +66,55 @@ See the [Event Type Specific Endpoints](#event-type-specific-endpoints) table ab
 
 ## Example Event Object
 
-Events are now **logically segmented** into sections for better organization and reduced parsing overhead:
+Events are now **logically segmented** with a `details` wrapper containing all structured content. Flags are computed based on actual data presence:
 
 ```json
 {
-    "eventID": "legendaryraidhour20220601",
-    "name": "Kyogre Raid Hour",
-    "eventType": "raid-hour",
-    "heading": "Raid Hour",
-    "image": "https://www.leekduck.com/assets/img/events/raidhour.jpg",
-    "start": "2022-06-01T18:00:00.000",
-    "end": "2022-06-01T19:00:00.000",
+    "eventID": "february-communityday2026",
+    "name": "Vulpix Community Day",
+    "eventType": "community-day",
+    "heading": "Community Day",
+    "image": "https://cdn.leekduck.com/assets/img/events/article-images/2026/...",
+    "start": "2026-02-01T14:00:00.000",
+    "end": "2026-02-01T17:00:00.000",
+    "details": {
+        "pokemon": [
+            {
+                "name": "Vulpix",
+                "image": "https://cdn.leekduck.com/assets/img/pokemon_icons/...",
+                "canBeShiny": true,
+                "source": "spawn"
+            }
+        ],
+        "bonuses": [
+            {
+                "text": "3x Catch XP",
+                "image": "https://cdn.leekduck.com/assets/img/events/bonuses/xp.png"
+            }
+        ],
+        "research": {
+            "special": [...]
+        },
+        "shinies": [...],
+        "showcases": [...],
+        "raids": [...],
+        "rocket": { "shadows": [...], "leaders": [...] },
+        "battle": { "leagues": [...] },
+        "eggs": [...],
+        "customSections": { ... }
+    },
     "flags": {
-        "hasSpawns": false,
+        "hasSpawns": true,
         "hasFieldResearchTasks": false,
-        "hasBonuses": false,
-        "hasRaids": true,
+        "hasBonuses": true,
+        "hasRaids": false,
         "hasEggs": false,
-        "hasShiny": true
-    },
-    "pokemon": {
-        "featured": {
-            "name": "Kyogre",
-            "image": "https://...",
-            "canBeShiny": true
-        }
-    },
-    "raids": {
-        "featured": {...}
+        "hasShiny": true,
+        "hasShowcases": false,
+        "hasRocket": false,
+        "hasBattle": false,
+        "hasResearch": true,
+        "hasRewards": true
     }
 }
 ```

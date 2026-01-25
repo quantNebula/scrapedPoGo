@@ -30,7 +30,7 @@ const path = require('path');
  */
 function loadShinyData() {
 	try {
-		const shinyFilePath = path.join(__dirname, '..', '..', 'data', 'shinies.json');
+		const shinyFilePath = path.join(__dirname, '..', '..', 'data', 'shinies.min.json');
 		
 		if (!fs.existsSync(shinyFilePath)) {
 			console.warn('shinies.json not found. Run the shinies scraper first.');

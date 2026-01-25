@@ -1,5 +1,5 @@
 {
-  "name": "scrapedPoGo",
+  "name": "scrapedpogo",
   "version": "1.0.0",
   "description": "Scrape LeekDuck.com for relevant information about Pokemon GO",
   "main": "index.js",
@@ -9,7 +9,7 @@
     "combinedetails": "node ./src/scrapers/combinedetails.js",
     "combinecontextual": "node ./src/scrapers/combineContextual.js",
     "scrapeshinies": "node ./src/scrapers/scrapeShinies.js",
-    "pipeline": "npm run scrape && npm run scrapeshinies && npm run detailedscrape && npm run combinedetails && npm run combinecontextual"
+    "pipeline": "npm run scrapeshinies && npm run scrape && npm run detailedscrape && npm run combinedetails && npm run combinecontextual"
   },
   "author": "quantNebula",
   "license": "MIT",
