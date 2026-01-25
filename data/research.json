@@ -1519,7 +1519,6 @@
                 "type": "encounter",
                 "name": "Pidgeotto",
                 "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm17.icon.png",
-                "canBeShiny": false,
                 "combatPower": {
                     "min": 475,
                     "max": 512
@@ -2301,7 +2300,6 @@
                 "type": "encounter",
                 "name": "Arbok",
                 "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm24.icon.png",
-                "canBeShiny": false,
                 "combatPower": {
                     "min": 777,
                     "max": 823

@@ -298,7 +298,6 @@
         "eggType": "1 km",
         "isAdventureSync": false,
         "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm810.icon.png",
-        "canBeShiny": false,
         "combatPower": {
             "min": 620,
             "max": 620
