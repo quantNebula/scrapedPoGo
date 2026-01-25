@@ -260,9 +260,9 @@ async function extractSection(doc, sectionId) {
             }
         }
         
-        // Pokemon lists
+        // Pokemon lists (skip dimension fetching for performance)
         if (sibling.className === 'pkmn-list-flex') {
-            const pokemon = await extractPokemonList(sibling);
+            const pokemon = await extractPokemonList(sibling, { fetchDimensions: false });
             result.pokemon.push(...pokemon);
         }
         
@@ -676,44 +676,78 @@ function extractPromoCodes(doc) {
  */
 async function extractEggPools(doc) {
     const eggs = {
+        '1km': [],
         '2km': [],
         '5km': [],
         '7km': [],
         '10km': [],
         '12km': [],
         'route': [],
-        'adventure': []
+        'adventure5km': [],
+        'adventure10km': []
     };
     
-    const pageContent = doc.querySelector('.page-content');
+    const pageContent = doc.querySelector('.page-content, article');
     if (!pageContent) return eggs;
     
     let inEggSection = false;
     let currentTier = '5km';
     
-    for (const node of pageContent.childNodes) {
-        // Check if we're in the eggs section
-        if (node.className?.includes('event-section-header')) {
+    // Get all relevant elements including h3 headers
+    const elements = pageContent.querySelectorAll('h2[id], h3, p, .pkmn-list-flex');
+    
+    for (const node of elements) {
+        // Check if we're entering/exiting the eggs section via h2
+        if (node.tagName === 'H2' && node.id) {
             inEggSection = node.id === 'eggs';
+            continue;
         }
         
         if (!inEggSection) continue;
         
-        // Detect tier from paragraph text
-        if (node.tagName === 'P') {
-            const text = node.textContent || '';
-            if (text.includes('2 km') || text.includes('2km')) currentTier = '2km';
+        // Detect tier from h3 headers (primary source)
+        if (node.tagName === 'H3') {
+            const text = node.textContent?.toLowerCase() || '';
+            
+            // Check for Adventure Sync first (before general km checks)
+            if (text.includes('adventure sync')) {
+                if (text.includes('10')) currentTier = 'adventure10km';
+                else if (text.includes('5')) currentTier = 'adventure5km';
+                else currentTier = 'adventure5km'; // Default adventure
+            }
+            // Check for Route eggs
+            else if (text.includes('route')) {
+                currentTier = 'route';
+            }
+            // Standard km tiers
+            else if (text.includes('1 km') || text.includes('1km')) currentTier = '1km';
+            else if (text.includes('2 km') || text.includes('2km')) currentTier = '2km';
             else if (text.includes('5 km') || text.includes('5km')) currentTier = '5km';
             else if (text.includes('7 km') || text.includes('7km')) currentTier = '7km';
             else if (text.includes('10 km') || text.includes('10km')) currentTier = '10km';
             else if (text.includes('12 km') || text.includes('12km')) currentTier = '12km';
-            else if (text.includes('Route') || text.includes('Mateo')) currentTier = 'route';
-            else if (text.includes('Adventure Sync')) currentTier = 'adventure';
+            continue;
         }
         
-        // Extract pokemon for current tier
+        // Also detect tier from paragraph text (fallback)
+        if (node.tagName === 'P') {
+            const text = node.textContent?.toLowerCase() || '';
+            if (text.includes('adventure sync')) {
+                if (text.includes('10')) currentTier = 'adventure10km';
+                else if (text.includes('5')) currentTier = 'adventure5km';
+            }
+            else if (text.includes('route') || text.includes('mateo')) currentTier = 'route';
+            else if (text.includes('1 km') || text.includes('1km')) currentTier = '1km';
+            else if (text.includes('2 km') || text.includes('2km')) currentTier = '2km';
+            else if (text.includes('5 km') || text.includes('5km')) currentTier = '5km';
+            else if (text.includes('7 km') || text.includes('7km')) currentTier = '7km';
+            else if (text.includes('10 km') || text.includes('10km')) currentTier = '10km';
+            else if (text.includes('12 km') || text.includes('12km')) currentTier = '12km';
+        }
+        
+        // Extract pokemon for current tier (skip dimension fetching for performance)
         if (node.className === 'pkmn-list-flex') {
-            const pokemon = await extractPokemonList(node);
+            const pokemon = await extractPokemonList(node, { fetchDimensions: false });
             if (eggs[currentTier]) {
                 eggs[currentTier].push(...pokemon);
             }
@@ -816,6 +850,324 @@ function normalizeDatePair(start, end) {
 }
 
 // ============================================================================
+// Text Parsing Utilities
+// ============================================================================
+
+/**
+ * Parses a price from text containing USD amounts.
+ * 
+ * @param {string} text - Text containing price info (e.g., "For US$7.99 (or the equivalent...)")
+ * @returns {{amount: number, currency: string}|null} Price object or null if no price found
+ * 
+ * @example
+ * parsePriceFromText("For US$7.99 (or the equivalent pricing tier)")
+ * // Returns: { amount: 7.99, currency: 'USD' }
+ */
+function parsePriceFromText(text) {
+    if (!text) return null;
+    
+    // Match US$X.XX pattern
+    const usdMatch = text.match(/US\$(\d+\.?\d*)/);
+    if (usdMatch) {
+        return { amount: parseFloat(usdMatch[1]), currency: 'USD' };
+    }
+    
+    // Match $X.XX pattern (assume USD)
+    const dollarMatch = text.match(/\$(\d+\.?\d*)/);
+    if (dollarMatch) {
+        return { amount: parseFloat(dollarMatch[1]), currency: 'USD' };
+    }
+    
+    return null;
+}
+
+/**
+ * Parses bonus multiplier information from text.
+ * 
+ * @param {string} text - Bonus text (e.g., "2× Catch XP", "3x Stardust")
+ * @returns {{multiplier: number, bonusType: string}|null} Parsed bonus or null
+ * 
+ * @example
+ * parseBonusMultiplier("2× Catch XP")
+ * // Returns: { multiplier: 2, bonusType: "Catch XP" }
+ */
+function parseBonusMultiplier(text) {
+    if (!text) return null;
+    
+    // Match patterns like "2×", "2x", "2X", "1/2" (half)
+    const match = text.match(/(\d+(?:\.\d+)?)\s*[×xX]\s+(.+)/i);
+    if (match) {
+        return { 
+            multiplier: parseFloat(match[1]), 
+            bonusType: match[2].trim() 
+        };
+    }
+    
+    // Match fraction patterns like "1/2 hatch distance"
+    const fractionMatch = text.match(/(\d+)\/(\d+)\s+(.+)/);
+    if (fractionMatch) {
+        return {
+            multiplier: parseInt(fractionMatch[1]) / parseInt(fractionMatch[2]),
+            bonusType: fractionMatch[3].trim()
+        };
+    }
+    
+    return null;
+}
+
+/**
+ * Parses GO Battle League cup names from text.
+ * 
+ * @param {string} text - Text mentioning GBL cups (e.g., "compete in Holiday Cup, Sunshine Cup, and Love Cup")
+ * @returns {string[]} Array of cup names found
+ * 
+ * @example
+ * parseGBLCups("Holiday Cup, Sunshine Cup, Love Cup, and more!")
+ * // Returns: ["Holiday Cup", "Sunshine Cup", "Love Cup"]
+ */
+function parseGBLCups(text) {
+    if (!text) return [];
+    
+    // Known GBL cup names - case insensitive matching
+    const knownCups = [
+        'Great League', 'Ultra League', 'Master League',
+        'Holiday Cup', 'Sunshine Cup', 'Love Cup', 'Little Cup',
+        'Premier Cup', 'Remix Cup', 'Fantasy Cup', 'Retro Cup',
+        'Kanto Cup', 'Johto Cup', 'Hoenn Cup', 'Sinnoh Cup', 'Unova Cup', 'Kalos Cup',
+        'Catch Cup', 'Element Cup', 'Summer Cup', 'Halloween Cup',
+        'Flying Cup', 'Fighting Cup', 'Psychic Cup', 'Electric Cup',
+        'Little Jungle Cup', 'Color Cup', 'Weather Cup', 'Fossil Cup',
+        'Willpower Cup', 'Hisui Cup', 'Evolution Cup', 'Swimsuit Cup'
+    ];
+    
+    const results = [];
+    const textLower = text.toLowerCase();
+    
+    for (const cup of knownCups) {
+        if (textLower.includes(cup.toLowerCase())) {
+            results.push(cup);
+        }
+    }
+    
+    // Also try to catch any "X Cup" we might have missed
+    const cupPattern = /\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s+Cup\b/g;
+    const matches = [...text.matchAll(cupPattern)];
+    
+    for (const m of matches) {
+        const cupName = m[1].trim() + ' Cup';
+        if (!results.includes(cupName)) {
+            results.push(cupName);
+        }
+    }
+    
+    return results;
+}
+
+/**
+ * Parses Pokemon names from paragraph text.
+ * Handles comma-separated lists and modifiers like "Dynamax", "Gigantamax", "wearing X attire".
+ * 
+ * @param {string} text - Paragraph text containing Pokemon names
+ * @returns {{name: string, modifier?: string}[]} Array of Pokemon with optional modifiers
+ * 
+ * @example
+ * parsePokemonFromText("Dynamax Hitmonlee, Dynamax Hitmonchan, Gigantamax Meowth, and more")
+ * // Returns: [
+ * //   { name: "Hitmonlee", modifier: "Dynamax" },
+ * //   { name: "Hitmonchan", modifier: "Dynamax" },
+ * //   { name: "Meowth", modifier: "Gigantamax" }
+ * // ]
+ */
+function parsePokemonFromText(text) {
+    if (!text) return [];
+    
+    const results = [];
+    
+    // Split on commas and "and"
+    const segments = text.split(/,\s*|\s+and\s+/i);
+    
+    for (const segment of segments) {
+        const trimmed = segment.trim();
+        
+        // Skip common filler phrases
+        if (/^(more|others?|many|various|etc)\.?!?$/i.test(trimmed)) continue;
+        
+        // Check for modifiers
+        const dynamaxMatch = trimmed.match(/^Dynamax\s+(.+)/i);
+        if (dynamaxMatch) {
+            results.push({ name: dynamaxMatch[1].trim(), modifier: 'Dynamax' });
+            continue;
+        }
+        
+        const gigantamaxMatch = trimmed.match(/^Gigantamax\s+(.+)/i);
+        if (gigantamaxMatch) {
+            results.push({ name: gigantamaxMatch[1].trim(), modifier: 'Gigantamax' });
+            continue;
+        }
+        
+        const costumeMatch = trimmed.match(/^(.+?)\s+wearing\s+(.+)/i);
+        if (costumeMatch) {
+            results.push({ 
+                name: costumeMatch[1].trim(), 
+                modifier: 'costume',
+                costume: costumeMatch[2].trim()
+            });
+            continue;
+        }
+        
+        const shadowMatch = trimmed.match(/^Shadow\s+(.+)/i);
+        if (shadowMatch) {
+            results.push({ name: shadowMatch[1].trim(), modifier: 'Shadow' });
+            continue;
+        }
+        
+        // Check if it looks like a Pokemon name (capitalized word, possibly with form)
+        const pokemonNamePattern = /^([A-Z][a-z]+(?:\s+\([^)]+\))?)/;
+        const nameMatch = trimmed.match(pokemonNamePattern);
+        if (nameMatch) {
+            results.push({ name: nameMatch[1].trim() });
+        }
+    }
+    
+    return results;
+}
+
+/**
+ * Parses a deadline date from text.
+ * 
+ * @param {string} text - Text containing deadline (e.g., "must be claimed before February 8, 2026 at 8 pm local time")
+ * @returns {{date: string, isLocal: boolean}|null} Parsed date info or null
+ * 
+ * @example
+ * parseDeadlineFromText("before February 8, 2026 at 8 pm local time")
+ * // Returns: { date: "2026-02-08T20:00:00.000", isLocal: true }
+ */
+function parseDeadlineFromText(text) {
+    if (!text) return null;
+    
+    // Match patterns like "February 8, 2026 at 8 pm"
+    const datePattern = /(?:before|until|by)\s+(\w+\s+\d{1,2},?\s+\d{4})\s+(?:at\s+)?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i;
+    const match = text.match(datePattern);
+    
+    if (match) {
+        const dateStr = match[1];
+        const timeStr = match[2];
+        const isLocal = text.toLowerCase().includes('local');
+        
+        try {
+            // Parse the date
+            const parsedDate = new Date(`${dateStr} ${timeStr}`);
+            if (!isNaN(parsedDate.getTime())) {
+                // Format as ISO string without timezone for local, with Z for global
+                const isoStr = parsedDate.toISOString();
+                return {
+                    date: isLocal ? isoStr.replace('Z', '').slice(0, 23) : isoStr,
+                    isLocal
+                };
+            }
+        } catch (e) {
+            // Parsing failed
+        }
+    }
+    
+    return null;
+}
+
+/**
+ * Extracts structured GO Pass tier information from a document.
+ * Parses the tiered bonus structure with rank requirements.
+ * 
+ * @param {Document} doc - DOM document
+ * @returns {{standard: Object[], deluxe: Object[]}} GO Pass tier structure
+ */
+function extractGoPassTiers(doc) {
+    const result = {
+        standard: [],
+        deluxe: []
+    };
+    
+    const pageContent = doc.querySelector('.page-content, article');
+    if (!pageContent) return result;
+    
+    let currentSection = null;  // 'standard' or 'deluxe'
+    let currentTier = null;
+    let inGoPassSection = false;
+    
+    const elements = pageContent.querySelectorAll('h2[id], h3, p, ul');
+    
+    for (const el of elements) {
+        const text = el.textContent || '';
+        
+        // Track if we're in the GO Pass section
+        if (el.tagName === 'H2' && el.id) {
+            inGoPassSection = el.id.includes('pass') || el.id.includes('milestone');
+            if (!inGoPassSection) {
+                // Left GO Pass section, stop processing
+                currentSection = null;
+                currentTier = null;
+            }
+            continue;
+        }
+        
+        // Detect section headers
+        if (el.tagName === 'H3') {
+            if (text.includes('Major Milestone') || text.includes('GO Pass Bonuses') || text.includes('GO Pass')) {
+                currentSection = 'standard';
+                inGoPassSection = true;
+            } else if (text.includes('Deluxe')) {
+                currentSection = 'deluxe';
+            } else if (!text.includes('Tier')) {
+                // Hit another section, reset
+                if (inGoPassSection && !text.toLowerCase().includes('pass')) {
+                    currentSection = null;
+                    currentTier = null;
+                }
+            }
+            continue;
+        }
+        
+        if (!currentSection) continue;
+        
+        // Detect tier info in paragraphs
+        if (el.tagName === 'P') {
+            const tierMatch = text.match(/Tier\s+(\d+)\s*\((?:Rank\s+)?(\d+)\)/i);
+            if (tierMatch) {
+                currentTier = {
+                    tier: parseInt(tierMatch[1]),
+                    rank: parseInt(tierMatch[2]),
+                    bonuses: []
+                };
+                result[currentSection].push(currentTier);
+            }
+        }
+        
+        // Extract bonuses from lists - only if they look like bonuses, not Pokemon
+        if (el.tagName === 'UL' && currentTier) {
+            const items = el.querySelectorAll('li');
+            items.forEach(li => {
+                const bonusText = li.textContent?.trim();
+                // Skip if it looks like a Pokemon name (single word, starts with capital)
+                // Bonuses typically have longer text with descriptive phrases
+                if (bonusText && bonusText.length > 15 && (
+                    bonusText.includes('Gifts') ||
+                    bonusText.includes('duration') ||
+                    bonusText.includes('rewards') ||
+                    bonusText.includes('×') ||
+                    bonusText.includes('bonus') ||
+                    bonusText.includes('XP') ||
+                    bonusText.includes('Stardust') ||
+                    bonusText.includes('damage')
+                )) {
+                    currentTier.bonuses.push(bonusText);
+                }
+            });
+        }
+    }
+    
+    return result;
+}
+
+// ============================================================================
 // Exports
 // ============================================================================
 
@@ -854,5 +1206,13 @@ module.exports = {
     // Date handling
     normalizeDate,
     normalizeDatePair,
-    isGlobalEvent
+    isGlobalEvent,
+    
+    // Text parsing utilities
+    parsePriceFromText,
+    parseBonusMultiplier,
+    parseGBLCups,
+    parsePokemonFromText,
+    parseDeadlineFromText,
+    extractGoPassTiers
 };

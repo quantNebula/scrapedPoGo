@@ -117,9 +117,18 @@ function segmentEventData(event) {
     if (event.grunts && event.grunts.length > 0) rocket.grunts = event.grunts;
     if (Object.keys(rocket).length > 0) details.rocket = rocket;
 
-    // Eggs section
-    if (event.eggs && event.eggs.length > 0) {
-        details.eggs = event.eggs;
+    // Eggs section - handle both array format and object format (for seasons)
+    if (event.eggs) {
+        if (Array.isArray(event.eggs) && event.eggs.length > 0) {
+            // Standard array format from events
+            details.eggs = event.eggs;
+        } else if (typeof event.eggs === 'object' && !Array.isArray(event.eggs)) {
+            // Object format from seasons: { '2km': [...], '5km': [...], ... }
+            const hasEggData = Object.values(event.eggs).some(arr => Array.isArray(arr) && arr.length > 0);
+            if (hasEggData) {
+                details.eggs = event.eggs;
+            }
+        }
     }
 
     // Bonuses section
@@ -218,12 +227,20 @@ function segmentEventData(event) {
     }
 
     // Compute flags based on actual data presence
+    // Helper for eggs - can be array or object format
+    const hasEggsData = () => {
+        if (!details.eggs) return false;
+        if (Array.isArray(details.eggs)) return details.eggs.length > 0;
+        // Object format: check if any tier has Pokemon
+        return Object.values(details.eggs).some(arr => Array.isArray(arr) && arr.length > 0);
+    };
+
     segmented.flags = {
         hasSpawns: !!(details.pokemon && details.pokemon.some(p => p.source === 'spawn')),
         hasFieldResearchTasks: !!(details.research && details.research.field && details.research.field.length > 0),
         hasBonuses: !!(details.bonuses && details.bonuses.length > 0),
         hasRaids: !!(details.raids && details.raids.length > 0),
-        hasEggs: !!(details.eggs && details.eggs.length > 0),
+        hasEggs: hasEggsData(),
         hasShiny: !!(details.shinies && details.shinies.length > 0),
         hasShowcases: !!(details.showcases && details.showcases.length > 0),
         hasRocket: !!(details.rocket && Object.keys(details.rocket).length > 0),

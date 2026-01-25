@@ -12,7 +12,12 @@ const {
     extractSection, 
     getSectionHeaders, 
     extractPokemonList,
-    extractEggPools
+    extractEggPools,
+    extractBonuses,
+    parsePokemonFromText,
+    parsePriceFromText,
+    parseGBLCups,
+    extractGoPassTiers
 } = require('../../utils/scraperUtils');
 
 /**
@@ -70,23 +75,29 @@ async function get(url, id, bkp) {
             bonuses: [],
             spawns: [],
             eggs: {
+                '1km': [],
                 '2km': [],
                 '5km': [],
                 '7km': [],
                 '10km': [],
                 '12km': [],
                 'route': [],
-                'adventure': []
+                'adventure5km': [],
+                'adventure10km': []
             },
             researchBreakthrough: [],
             specialResearch: [],
             masterworkResearch: [],
+            masterworkPrice: null,
             communityDays: [],
             features: [],
             goBattleLeague: '',
-            goPass: [],
+            goBattleLeagueCups: [],
+            goPassTiers: null,
             pokemonDebuts: [],
-            maxPokemonDebuts: []
+            pokemonDebutsText: [],
+            maxPokemonDebuts: [],
+            maxPokemonDebutsText: []
         };
 
         // Get season name from title
@@ -95,8 +106,17 @@ async function get(url, id, bkp) {
             seasonData.name = title.textContent?.trim() || '';
         }
 
+        // Extract bonuses using shared utility (captures .bonus-item elements)
+        const { bonuses } = await extractBonuses(doc);
+        if (bonuses.length > 0) {
+            seasonData.bonuses = bonuses;
+        }
+
         // Extract eggs using shared utility
         seasonData.eggs = await extractEggPools(doc);
+
+        // Extract GO Pass tier structure
+        seasonData.goPassTiers = extractGoPassTiers(doc);
 
         const sections = getSectionHeaders(doc);
         
@@ -104,18 +124,6 @@ async function get(url, id, bkp) {
             if (sectionId === 'leek-duck' || sectionId === 'graphic') continue;
 
             const sectionContent = await extractSection(doc, sectionId);
-
-            // Seasonal bonuses
-            if (sectionId.includes('bonus')) {
-                sectionContent.lists.forEach(list => {
-                    seasonData.bonuses.push(...list);
-                });
-                sectionContent.paragraphs.forEach(p => {
-                    if (p.trim() && !p.includes('following bonuses')) {
-                        seasonData.bonuses.push(p);
-                    }
-                });
-            }
 
             // Spawns / Wild encounters
             if (sectionId.includes('spawn') || sectionId.includes('wild')) {
@@ -127,7 +135,7 @@ async function get(url, id, bkp) {
                 seasonData.researchBreakthrough.push(...sectionContent.pokemon);
             }
 
-            // Special Research
+            // Special Research (but not masterwork)
             if (sectionId.includes('special-research') || 
                 (sectionId.includes('research') && !sectionId.includes('breakthrough') && !sectionId.includes('masterwork'))) {
                 sectionContent.paragraphs.forEach(p => {
@@ -136,10 +144,17 @@ async function get(url, id, bkp) {
                 seasonData.specialResearch.push(...sectionContent.pokemon);
             }
 
-            // Masterwork Research
+            // Masterwork Research - also extract price
             if (sectionId.includes('masterwork')) {
                 sectionContent.paragraphs.forEach(p => {
-                    if (p.trim()) seasonData.masterworkResearch.push(p);
+                    if (p.trim()) {
+                        seasonData.masterworkResearch.push(p);
+                        // Try to extract price from the text
+                        const price = parsePriceFromText(p);
+                        if (price) {
+                            seasonData.masterworkPrice = price;
+                        }
+                    }
                 });
             }
 
@@ -150,31 +165,45 @@ async function get(url, id, bkp) {
                 });
             }
 
-            // Features / New Pokemon
+            // Features / New Pokemon Debuts
             if (sectionId.includes('new') || sectionId.includes('debut') || sectionId.includes('discover')) {
                 if (sectionId.includes('max')) {
+                    // Max Pokemon Debuts (Dynamax, Gigantamax)
                     seasonData.maxPokemonDebuts.push(...sectionContent.pokemon);
                     sectionContent.paragraphs.forEach(p => {
-                        if (p.trim()) seasonData.maxPokemonDebuts.push(p);
+                        if (p.trim()) {
+                            // Parse Pokemon names from text
+                            const parsed = parsePokemonFromText(p);
+                            if (parsed.length > 0) {
+                                seasonData.maxPokemonDebutsText.push(...parsed);
+                            }
+                        }
                     });
                 } else {
+                    // Regular Pokemon Debuts
                     seasonData.pokemonDebuts.push(...sectionContent.pokemon);
                     sectionContent.paragraphs.forEach(p => {
-                        if (p.trim()) seasonData.pokemonDebuts.push(p);
+                        if (p.trim()) {
+                            // Parse Pokemon names from text
+                            const parsed = parsePokemonFromText(p);
+                            if (parsed.length > 0) {
+                                seasonData.pokemonDebutsText.push(...parsed);
+                            }
+                        }
                     });
                 }
             }
 
-            // GO Battle League
-            if (sectionId.includes('battle-league')) {
-                seasonData.goBattleLeague = sectionContent.paragraphs.join(' ');
-            }
-
-            // GO Pass
-            if (sectionId === 'go-pass') {
-                sectionContent.lists.forEach(list => {
-                    seasonData.goPass.push(...list);
-                });
+            // GO Battle League - extract cup names
+            if (sectionId.includes('battle-league') || sectionId.includes('go-battle')) {
+                const fullText = sectionContent.paragraphs.join(' ');
+                seasonData.goBattleLeague = fullText;
+                
+                // Parse cup names from text
+                const cups = parseGBLCups(fullText);
+                if (cups.length > 0) {
+                    seasonData.goBattleLeagueCups = cups;
+                }
             }
         }
 
