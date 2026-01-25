@@ -67,7 +67,7 @@ Team GO Rocket events may include:
 - **`bonuses`**: Bonuses related to Team GO Rocket battles
 - **`fieldResearch`**: Rocket-themed research tasks
 
-For complete field definitions and optional sections, see the main [Events documentation](../Events.md).
+
 
 ## Notes
 

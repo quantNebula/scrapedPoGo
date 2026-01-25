@@ -66,7 +66,7 @@ Max Monday events may include:
 - **`bonuses`**: Special Max Battle bonuses active on Mondays
 - **`pokemon`**: Featured Dynamax Pokémon for the day
 
-For complete field definitions and optional sections, see the main [Events documentation](../Events.md).
+
 
 ## Notes
 

@@ -1,8 +1,10 @@
-# Endpoint
+# Rocket Lineups Data
+
+## Endpoint
 
 `https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/rocketLineups.min.json`
 
-# Example Rocket Lineup Object
+## Example Rocket Lineup Object
 
 ```json
 {
@@ -76,7 +78,7 @@
 }
 ```
 
-# Fields
+## Fields
 
 | Field               | Type              | Description
 |-------------------- |------------------ |---------------------
@@ -87,11 +89,11 @@
 | **`secondPokemon`** | `ShadowPokemon[]` | The possible Pokemon in the second slot. See [ShadowPokemon](#ShadowPokemon).
 | **`thirdPokemon`**  | `ShadowPokemon[]` | The possible Pokemon in the third slot. See [ShadowPokemon](#ShadowPokemon).
 
-# Other Objects
+## Other Objects
 
-## ShadowPokemon
+### ShadowPokemon
 
-### Example Object
+#### Example Object
 
 ```json
 {
@@ -112,7 +114,7 @@
 }
 ```
 
-### Fields
+#### Fields
 
 | Field                    | Type       | Description
 |------------------------- |----------- |---------------------
@@ -123,9 +125,9 @@
 | **`isEncounter`**        | `boolean`  | Whether this Pokemon can be caught after winning the battle.
 | **`canBeShiny`**         | `boolean`  | Whether or not the Pokemon can be shiny when encountered.
 
-## Weaknesses
+### Weaknesses
 
-### Example Object
+#### Example Object
 
 ```json
 {
@@ -143,7 +145,7 @@
 }
 ```
 
-### Fields
+#### Fields
 
 | Field        | Type       | Description
 |------------- |----------- |---------------------

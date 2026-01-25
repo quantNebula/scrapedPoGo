@@ -1,4 +1,4 @@
-# Shinies Endpoint
+# Shinies Data
 
 **URL**: `https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/shinies.min.json`  
 

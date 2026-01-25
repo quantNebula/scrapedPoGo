@@ -73,7 +73,7 @@ Spotlight Hour events may include:
 - **`pokemon`**: Featured Pokémon with shiny availability
 - **`bonuses`**: Active bonus (2x Catch XP, 2x Stardust, etc.)
 
-For complete field definitions and optional sections, see the main [Events documentation](../Events.md).
+
 
 ## Notes
 

@@ -69,7 +69,7 @@ GO Pass events may include:
 - **`fieldResearch`**: Special Research available with ticket
 - **`raids`**: Featured raid bosses during the event
 
-For complete field definitions and optional sections, see the main [Events documentation](../Events.md).
+
 
 ## Notes
 

@@ -77,7 +77,7 @@ Season events may include:
 - **`raids`**: Featured raid rotations
 - **`eggs`**: Seasonal egg pool changes
 
-For complete field definitions and optional sections, see the main [Events documentation](../Events.md).
+
 
 ## Notes
 

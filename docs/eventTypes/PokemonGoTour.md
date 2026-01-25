@@ -69,7 +69,7 @@ Pokémon GO Tour events may include:
 - **`fieldResearch`**: Exclusive Special Research
 - **`raids`**: Featured raid bosses throughout the event
 
-For complete field definitions and optional sections, see the main [Events documentation](../Events.md).
+
 
 ## Notes
 

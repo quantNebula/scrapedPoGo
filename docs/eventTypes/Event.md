@@ -77,7 +77,7 @@ General events may include:
 - **`raids`**: Featured raid bosses
 - **`eggs`**: Egg hatch pool changes
 
-For complete field definitions and optional sections, see the main [Events documentation](../Events.md).
+
 
 ## Notes
 

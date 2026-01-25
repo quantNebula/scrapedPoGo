@@ -66,7 +66,7 @@ Research events may include:
 - **`pokemon`**: Featured Pokémon rewards
 - **`fieldResearch`**: Research tasks and rewards
 
-For complete field definitions and optional sections, see the main [Events documentation](../Events.md).
+
 
 ## Notes
 

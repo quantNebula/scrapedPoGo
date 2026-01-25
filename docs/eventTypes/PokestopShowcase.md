@@ -66,7 +66,7 @@ PokéStop Showcase events may include:
 - **`pokemon`**: Featured Pokémon eligible for entry
 - **`details`**: Competition rules and judging criteria
 
-For complete field definitions and optional sections, see the main [Events documentation](../Events.md).
+
 
 ## Notes
 

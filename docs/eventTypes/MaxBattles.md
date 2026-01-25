@@ -66,7 +66,7 @@ Max Battle events may include:
 - **`pokemon`**: Featured Dynamax Pokémon details
 - **`bonuses`**: Any active bonuses during the rotation
 
-For complete field definitions and optional sections, see the main [Events documentation](../Events.md).
+
 
 ## Notes
 

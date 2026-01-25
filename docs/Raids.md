@@ -1,8 +1,10 @@
-# Endpoint
+# Raids Data
+
+## Endpoint
 
 `https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/raids.min.json`
 
-# Example Raid Object
+## Example Raid Object
 
 ```json
 {
@@ -47,7 +49,7 @@
     "image": "https://cdn.leekduck.com/assets/img/pokemon_icons/pm642.fINCARNATE.icon.png"
 }
 ```
-# Fields
+## Fields
 
 | Field                | Type          | Description
 |--------------------- |-------------- |---------------------
@@ -64,11 +66,11 @@
 | **`boostedWeather`** | `Weather[]`   | The type(s) of weather that boost the Pokemon's combat power. See [Weather](#Weather).
 | **`image`**          | `string`      | The image of the Pokemon.*
 
-# Other Objects
+## Other Objects
 
-## Type
+### Type
 
-### Example Object
+#### Example Object
 
 ```json
 {
@@ -77,16 +79,16 @@
 }
 ```
 
-### Fields
+#### Fields
 
 | Field       | Type     | Description
 |------------ |--------- |---------------------
 | **`name`**  | `string` | The name of the type
 | **`image`** | `string` | The image of the type. 
 
-## CombatPower
+### CombatPower
 
-### Example Object
+#### Example Object
 
 ```json
 {
@@ -101,7 +103,7 @@
 }
 ```
 
-### Fields
+#### Fields
 
 | Field             | Type  | Description
 |------------------ |------ |---------------------
@@ -110,9 +112,9 @@
 | **`boosted.min`** | `int` | The minimum boosted combat power of the Pokemon.
 | **`boosted.max`** | `int` | The maximum boosted combat power of the Pokemon.
 
-## Weather
+### Weather
 
-### Example Object
+#### Example Object
 
 ```json
 {
@@ -121,7 +123,7 @@
 }
 ```
 
-### Fields
+#### Fields
 
 | Field       | Type     | Description
 |------------ |--------- |---------------------

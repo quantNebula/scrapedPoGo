@@ -1,8 +1,10 @@
-# Endpoint
+# Research Data
+
+## Endpoint
 
 `https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/research.min.json`
 
-# Example Research Object
+## Example Research Object
 
 ```json
 {
@@ -45,7 +47,7 @@
     ]
 }
 ```
-# Fields
+## Fields
 
 | Field         | Type            | Description
 |-------------- |---------------- |---------------------
@@ -53,13 +55,13 @@
 | **`type`**    | `string\|null`  | The type of research (optional).<br />Can be `event`, `catch`, `throw`, `battle`, `explore`, `training`, `rocket`, `buddy`, `ar`, `sponsored`, or `null` if not specified
 | **`rewards`** | `Reward`        | The rewards for completing the research Task. See [Reward](#Reward)
 
-# Other Objects
+## Other Objects
 
-## Reward
+### Reward
 
 Rewards can be one of three types: `encounter`, `item`, or `resource`. The fields available depend on the reward type.
 
-### Encounter Reward Example
+#### Encounter Reward Example
 
 ```json
 {
@@ -74,7 +76,7 @@ Rewards can be one of three types: `encounter`, `item`, or `resource`. The field
 }
 ```
 
-### Item/Resource Reward Example
+#### Item/Resource Reward Example
 
 ```json
 {
@@ -85,7 +87,7 @@ Rewards can be one of three types: `encounter`, `item`, or `resource`. The field
 }
 ```
 
-### Common Fields (All Reward Types)
+#### Common Fields (All Reward Types)
 
 | Field       | Type     | Description
 |------------ |--------- |---------------------
@@ -101,7 +103,7 @@ Rewards can be one of three types: `encounter`, `item`, or `resource`. The field
 | **`combatPower.min`** | `int`     | The minimum combat power of the reward Pokemon.
 | **`combatPower.max`** | `int`     | The maximum combat power of the reward Pokemon.
 
-### Item/Resource-Only Fields
+#### Item/Resource-Only Fields
 
 | Field          | Type  | Description
 |--------------- |------ |---------------------

@@ -67,7 +67,7 @@ Research Day events may include:
 - **`pokemon`**: Featured Pokémon with shiny availability
 - **`bonuses`**: Active bonuses during the event
 
-For complete field definitions and optional sections, see the main [Events documentation](../Events.md).
+
 
 ## Notes
 

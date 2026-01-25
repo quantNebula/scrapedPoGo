@@ -72,7 +72,7 @@ Raid Hour events may include:
 - **`raids`**: Featured raid boss details
 - **`pokemon`**: Featured Pokémon with shiny availability
 
-For complete field definitions and optional sections, see the main [Events documentation](../Events.md).
+
 
 ## Notes
 

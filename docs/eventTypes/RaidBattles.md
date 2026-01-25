@@ -73,7 +73,7 @@ Raid Battle events may include:
 - **`raids`**: Featured raid boss details by tier
 - **`pokemon`**: Featured Pokémon with shiny availability
 
-For complete field definitions and optional sections, see the main [Events documentation](../Events.md).
+
 
 ## Notes
 

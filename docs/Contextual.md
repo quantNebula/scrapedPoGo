@@ -1,12 +1,14 @@
-# Endpoints
+# Contextualized Data
 
-- Minified: `https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/contextual.min.json`
+## Endpoint
 
-# Overview
+`https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/contextual.min.json`
+
+## Overview
 
 The `contextual.json` file is a unified, player-focused aggregation of all scraped data sources. It answers "What's available now, from where, and when does it end?"
 
-## Schema Overview
+### Schema Overview
 
 ```json
 {
@@ -18,7 +20,7 @@ The `contextual.json` file is a unified, player-focused aggregation of all scrap
 }
 ```
 
-# Fields
+## Fields
 
 The contextual file contains five main sections:
 
@@ -30,7 +32,7 @@ The contextual file contains five main sections:
 | `pokemonIndex` | array | Cross-reference for all Pokemon sources |
 | `shinyOpportunities` | object | Shiny availability with current sources |
 
-## Metadata
+### Metadata
 
 Provides generation timestamp and source file versions for cache invalidation.
 
@@ -53,7 +55,7 @@ Provides generation timestamp and source file versions for cache invalidation.
 | `generatedAt` | string (ISO 8601) | Timestamp when the data was generated |
 | `sourceVersions` | object | Object containing timestamps of source files (events, raids, eggs, research, rocketLineups, shinies) |
 
-## Timeline
+### Timeline
 
 Events categorized by urgency with priority scoring.
 
@@ -101,7 +103,7 @@ Pokémon GO features various recurring event types with distinct mechanics:
 | `hasSpawns` | boolean | Event has special spawns |
 | `hasFieldResearchTasks` | boolean | Event has field research tasks |
 
-### Priority Scoring
+#### Priority Scoring
 
 Priority scores are calculated based on event type and features:
 - Community Day: 100
@@ -117,15 +119,15 @@ Priority scores are calculated based on event type and features:
 - +10 bonus for active bonuses
 - +25 urgency bonus for events ending <24h
 
-## Current Availability
+### Current Availability
 
 Unified availability object organized by source type.
 
-### Raids (`currentAvailability.raids`)
+#### Raids (`currentAvailability.raids`)
 
 Raids are cooperative multiplayer battles against powerful Pokémon that appear at Gyms. Multiple trainers can team up to defeat raid bosses and earn rewards including rare candy, TMs, and a chance to catch the featured Pokémon.
 
-#### Raid Mechanics
+##### Raid Mechanics
 
 - **Duration**: Raids appear for 1 hour with a 45-minute egg countdown
 - **Team Size**: 1-20 trainers (varies by difficulty)
@@ -153,7 +155,7 @@ Each raid includes:
 - `boostedWeather` - Weather conditions
 - `activeEventIDs` - Related active events
 
-#### Weather Boost System
+##### Weather Boost System
 
 Weather directly affects Pokémon spawns, move effectiveness, and CP levels in Pokémon GO:
 
@@ -169,11 +171,11 @@ Weather directly affects Pokémon spawns, move effectiveness, and CP levels in P
 
 **Important**: Weather is determined by AccuWeather data and updates hourly. Weather-boosted Pokémon (including raid bosses) have a swirling animation on the catch screen.
 
-### Eggs (`currentAvailability.eggs`)
+#### Eggs (`currentAvailability.eggs`)
 
 Eggs are obtained from PokéStops, Gyms, Gifts, and special encounters. They require Incubators to hatch and must be walked a specific distance.
 
-#### Egg Hatching Mechanics
+##### Egg Hatching Mechanics
 
 - **Incubators**: Unlimited-use Incubator (orange) or Limited-use Incubators (3 uses, blue)
 - **Distance Tracking**: Uses GPS and smartphone motion sensors; Adventure Sync tracks distance when app is closed
@@ -200,7 +202,7 @@ Each egg entry includes:
 - `isRegional`, `isGiftExchange`
 - `eventOverride` - Active event IDs affecting egg pools
 
-#### Rarity Tiers
+##### Rarity Tiers
 
 Egg contents are displayed with rarity tiers visible in-game:
 
@@ -242,6 +244,8 @@ Encounter format:
   ]
 }
 ```
+
+#### Common Task Categories
 
 #### Common Task Categories
 
@@ -384,15 +388,15 @@ The in-game appraisal system rates IVs with stars:
 
 **Perfect IVs ("Hundo")**: 15/15/15 = 100% IV = 3 red stars
 
-## Shiny Opportunities
+### Shiny Opportunities
 
 Cross-references shiny availability with current sources.
 
-### Shiny Mechanics
+#### Shiny Mechanics
 
 Shiny Pokémon are alternate color variants that are purely cosmetic. The shiny status is determined when a Pokémon spawns or is generated (for eggs/raids/research).
 
-#### Base Shiny Rates
+##### Base Shiny Rates
 
 | Encounter Type | Shiny Rate | Notes |
 |----------------|------------|-------|
@@ -418,7 +422,7 @@ Shiny Pokémon are alternate color variants that are purely cosmetic. The shiny 
 
 **Important**: Shiny rates are per encounter, not cumulative. Encountering 512 standard spawns does not guarantee a shiny.
 
-### Shiny Categories
+#### Shiny Categories
 
 | Category | Definition |
 |----------|------------|
@@ -457,11 +461,11 @@ Shiny Pokémon are alternate color variants that are purely cosmetic. The shiny 
 4. **Shadow Pokémon**: Leaders offer 1/64 shiny rate - use Rocket Radars strategically
 5. **Permaboosted Species**: Prioritize Gible, Shinx, Alolan forms (1/128 or 1/64 permanent rates)
 
-## Dynamax and Gigantamax System (New in 2024-2026)
+#### Dynamax and Gigantamax System (New in 2024-2026)
 
 Dynamax and Gigantamax mechanics from Pokémon Sword/Shield were integrated into Pokémon GO starting with the Max Out season.
 
-### Power Spots
+##### Power Spots
 
 Power Spots are special locations (separate from PokéStops/Gyms) where Max Battles occur:
 
@@ -473,7 +477,7 @@ Power Spots are special locations (separate from PokéStops/Gyms) where Max Batt
 - **Placement**: After defeating a Max Battle, place your Dynamax/Gigantamax Pokémon to help others (up to 40 total)
 - **Damage Boost**: Power Spots with 15+ placed Pokémon grant +20% damage bonus to all participants
 
-### Max Battles
+##### Max Battles
 
 - **Dynamax Battles**: 1-4 star difficulty; 4 trainers team up against a giant Pokémon
 - **Gigantamax Battles**: 6-star difficulty; 10-40 trainers coordinate to defeat ultra-powerful bosses
@@ -489,7 +493,7 @@ Power Spots are special locations (separate from PokéStops/Gyms) where Max Batt
 - **Cheering**: Fainted trainers can still tap screen to help charge meter for active teammates
 - **Party Power**: When raiding with Party Play active, Party Power doubles Charged Attack damage (charges faster with more party members)
 
-### Obtaining Dynamax/Gigantamax Pokémon
+##### Obtaining Dynamax/Gigantamax Pokémon
 
 1. **Max Battles**: Defeat and catch from Power Spot battles (costs Max Particles to enter)
 2. **Special Trade**: Trade Gigantamax Pokémon with other trainers (requires Special Trade slot)
@@ -497,11 +501,11 @@ Power Spots are special locations (separate from PokéStops/Gyms) where Max Batt
 
 **Note**: Dynamax and Gigantamax Pokémon cannot be placed in Gyms or used in GO Battle League (PvP).
 
-## Buddy System and Adventure Effects
+#### Buddy System and Adventure Effects
 
 The Buddy System allows trainers to walk with a Pokémon to earn Candy, XL Candy, and unlock progressive bonuses through Affection Hearts.
 
-### Buddy Levels
+##### Buddy Levels
 
 | Level | Hearts Required | Key Unlocks |
 |-------|----------------|-------------|
@@ -596,7 +600,7 @@ Party Play enables 4 trainers (level 15+) to adventure together with shared obje
 
 **Duration**: Parties last 1 hour (can end early if host disbands)
 
-# Generation
+## Generation
 
 The contextual data is regenerated on every scrape run, after `combinedetails` completes.
 
@@ -604,7 +608,7 @@ The contextual data is regenerated on every scrape run, after `combinedetails` c
 npm run combinecontextual
 ```
 
-# Use Cases
+## Use Cases
 
 1. **"What raids are available right now?"** → `currentAvailability.raids`
 2. **"What's ending soon?"** → `timeline.endingSoon`

@@ -1,8 +1,10 @@
-# Endpoint
+# Eggs Data
+
+## Endpoint
 
 `https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/eggs.min.json`
 
-# Example Egg Object
+## Example Egg Object
 
 ```json
 {
@@ -17,7 +19,7 @@
     }
 }
 ```
-# Fields
+## Fields
 
 | Field                 | Type      | Description
 |---------------------- |---------- |---------------------

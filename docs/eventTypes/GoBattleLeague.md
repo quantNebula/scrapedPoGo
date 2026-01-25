@@ -66,7 +66,7 @@ GO Battle League events may include:
 - **`bonuses`**: Season rewards and rank-up bonuses
 - **`details`**: Cup rotation schedules and CP restrictions
 
-For complete field definitions and optional sections, see the main [Events documentation](../Events.md).
+
 
 ## Notes
 

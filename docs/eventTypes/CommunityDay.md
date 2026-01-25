@@ -74,8 +74,6 @@ Community Day events may include:
 - **`bonuses`**: XP, Stardust, or other gameplay bonuses
 - **`fieldResearch`**: Special research tasks available during the event
 
-For complete field definitions and optional sections, see the main [Events documentation](../Events.md).
-
 ## Notes
 
 - Community Days typically run for 3 hours (14:00-17:00 local time)
