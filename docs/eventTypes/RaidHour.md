@@ -43,10 +43,17 @@ The file contains an array of event objects with the `eventType` field set to `"
   "flags": {
     "hasSpawns": false,
     "hasFieldResearchTasks": false,
+    "hasBonuses": false,
     "hasRaids": false,
     "hasEggs": false,
-    "hasShiny": false
-  }
+    "hasShiny": false,
+    "hasShowcases": false,
+    "hasRocket": false,
+    "hasBattle": false,
+    "hasResearch": false,
+    "hasRewards": false
+  },
+  "canBeShiny": false
 }
 ```
 
@@ -54,23 +61,23 @@ The file contains an array of event objects with the `eventType` field set to `"
 
 All Raid Hour events inherit the [core event fields](../Events.md#core-fields) and may include additional sections described in the main [Events documentation](../Events.md).
 
-| Field           | Type     | Description
-|---------------- |--------- |---------------------
-| **`eventID`**   | `string` | Unique identifier (typically "raidhour" + YYYYMMDD)
-| **`name`**      | `string` | Name including featured Pokémon
-| **`eventType`** | `string` | Always `"raid-hour"`
-| **`heading`**   | `string` | Always `"Raid Hour"`
-| **`image`**     | `string` | Event header/thumbnail image URL
-| **`start`**     | `string` | Event start time (ISO 8601 format, typically 18:00 local time)
-| **`end`**       | `string` | Event end time (ISO 8601 format, typically 19:00 local time)
-| **`flags`**     | `object` | Content availability flags (see [Flags Section](../Events.md#flags-section))
+| Field           | Type      | Description
+|---------------- |---------- |---------------------
+| **`eventID`**   | `string`  | Unique identifier (typically "raidhour" + YYYYMMDD)
+| **`name`**      | `string`  | Name including featured Pokémon
+| **`eventType`** | `string`  | Always `"raid-hour"`
+| **`heading`**   | `string`  | Always `"Raid Hour"`
+| **`image`**     | `string`  | Event header/thumbnail image URL
+| **`start`**     | `string`  | Event start time (ISO 8601 format, typically 18:00 local time)
+| **`end`**       | `string`  | Event end time (ISO 8601 format, typically 19:00 local time)
+| **`flags`**     | `object`  | Content availability flags (see [Flags Section](../Events.md#flags-section))
+| **`canBeShiny`**| `boolean` | Whether the featured raid boss can be shiny
 
 ## Additional Sections
 
-Raid Hour events may include:
+Raid Hour events have this additional top-level field:
 
-- **`raids`**: Featured raid boss details
-- **`pokemon`**: Featured Pokémon with shiny availability
+- **`canBeShiny`**: Whether the featured raid boss can be encountered as shiny
 
 
 

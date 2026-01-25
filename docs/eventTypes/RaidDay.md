@@ -61,11 +61,13 @@ All Raid Day events inherit the [core event fields](../Events.md#core-fields) an
 
 ## Additional Sections
 
-Raid Day events may include:
+Raid Day events include a `details` object containing:
 
-- **`raids`**: Featured raid boss with difficulty tier
-- **`pokemon`**: Featured Pokémon with shiny availability
-- **`bonuses`**: Active bonuses (extra Rare Candy, XP, etc.)
+- **`pokemon`**: Array of featured Pokémon objects with `imageWidth`, `imageHeight`, `imageType`, `source`, and `canBeShiny` fields
+- **`bonuses`**: Array of active bonuses (extra Rare Candy, XP, etc.)
+- **`raids`**: Featured raid boss details with difficulty tiers
+
+For detailed field documentation, see the main [Events documentation](../Events.md).
 
 
 

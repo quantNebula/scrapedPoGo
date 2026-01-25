@@ -8,20 +8,17 @@
 
 ```json
 {
-    "text": "Purify 3 Shadow Pokémon",
+    "text": "Defeat a Team GO Rocket Grunt",
     "type": "rocket",
     "rewards": [
         {
             "type": "item",
-            "name": "Fast TM",
+            "name": "Mysterious Component",
             "quantity": 1,
-            "image": "https://cdn.leekduck.com/assets/img/items/Fast%20TM.png"
-        },
-        {
-            "type": "item",
-            "name": "Charged TM",
-            "quantity": 1,
-            "image": "https://cdn.leekduck.com/assets/img/items/Charged%20TM.png"
+            "image": "https://cdn.leekduck.com/assets/img/items/Mysterious%20Component.png",
+            "imageWidth": 512,
+            "imageHeight": 512,
+            "imageType": "png"
         }
     ]
 }
@@ -31,18 +28,21 @@
 
 ```json
 {
-    "text": "Catch 5 Pokémon",
-    "type": "catch",
+    "text": "Earn a Candy exploring with your buddy",
+    "type": "buddy",
     "rewards": [
         {
             "type": "encounter",
-            "name": "Misdreavus",
-            "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm200.icon.png",
+            "name": "Fidough",
+            "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm926.icon.png",
             "canBeShiny": true,
             "combatPower": {
-                "min": 779,
-                "max": 825
-            }
+                "min": 389,
+                "max": 422
+            },
+            "imageWidth": 91,
+            "imageHeight": 79,
+            "imageType": "png"
         }
     ]
 }
@@ -53,7 +53,7 @@
 |-------------- |---------------- |---------------------
 | **`text`**    | `string`        | The research task text.
 | **`type`**    | `string\|null`  | The type of research (optional).<br />Can be `event`, `catch`, `throw`, `battle`, `explore`, `training`, `rocket`, `buddy`, `ar`, `sponsored`, or `null` if not specified
-| **`rewards`** | `Reward`        | The rewards for completing the research Task. See [Reward](#Reward)
+| **`rewards`** | `Reward[]`      | The rewards for completing the research task. See [Reward](#Reward)
 
 ## Other Objects
 
@@ -66,13 +66,16 @@ Rewards can be one of three types: `encounter`, `item`, or `resource`. The field
 ```json
 {
     "type": "encounter",
-    "name": "Misdreavus",
-    "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm200.icon.png",
+    "name": "Fidough",
+    "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm926.icon.png",
     "canBeShiny": true,
     "combatPower": {
-        "min": 779,
-        "max": 825
-    }
+        "min": 389,
+        "max": 422
+    },
+    "imageWidth": 91,
+    "imageHeight": 79,
+    "imageType": "png"
 }
 ```
 
@@ -81,19 +84,25 @@ Rewards can be one of three types: `encounter`, `item`, or `resource`. The field
 ```json
 {
     "type": "item",
-    "name": "Rare Candy",
-    "quantity": 3,
-    "image": "https://cdn.leekduck.com/assets/img/items/Rare%20Candy.png"
+    "name": "Mysterious Component",
+    "quantity": 1,
+    "image": "https://cdn.leekduck.com/assets/img/items/Mysterious%20Component.png",
+    "imageWidth": 512,
+    "imageHeight": 512,
+    "imageType": "png"
 }
 ```
 
 #### Common Fields (All Reward Types)
 
-| Field       | Type     | Description
-|------------ |--------- |---------------------
-| **`type`**  | `string` | The type of reward.<br />Can be `encounter`, `item`, `resource`
-| **`name`**  | `string` | The name of the reward (Pokemon name or item name).
-| **`image`** | `string` | The image of the reward.
+| Field            | Type     | Description
+|----------------- |--------- |---------------------
+| **`type`**       | `string` | The type of reward.<br />Can be `encounter`, `item`, `resource`
+| **`name`**       | `string` | The name of the reward (Pokemon name or item name).
+| **`image`**      | `string` | The image URL of the reward.
+| **`imageWidth`** | `int`    | The width of the image in pixels.
+| **`imageHeight`**| `int`    | The height of the image in pixels.
+| **`imageType`**  | `string` | The image format (e.g., `png`).
 
 ### Encounter-Only Fields
 

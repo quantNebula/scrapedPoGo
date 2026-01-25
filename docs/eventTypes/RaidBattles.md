@@ -68,10 +68,12 @@ All Raid Battle events inherit the [core event fields](../Events.md#core-fields)
 
 ## Additional Sections
 
-Raid Battle events may include:
+Raid Battle events include a `details` object containing:
 
-- **`raids`**: Featured raid boss details by tier
-- **`pokemon`**: Featured Pokémon with shiny availability
+- **`raids`**: Featured raid boss details organized by tier
+- **`pokemon`**: Array of featured Pokémon objects with `imageWidth`, `imageHeight`, `imageType`, and `canBeShiny` fields
+
+For detailed field documentation, see the main [Events documentation](../Events.md).
 
 
 

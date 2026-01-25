@@ -61,11 +61,13 @@ All Research Day events inherit the [core event fields](../Events.md#core-fields
 
 ## Additional Sections
 
-Research Day events may include:
+Research Day events typically have minimal additional data. When present, they may include:
 
-- **`fieldResearch`**: Event-specific Field Research tasks
+- **`research`**: Event-specific Field Research tasks
 - **`pokemon`**: Featured Pokémon with shiny availability
 - **`bonuses`**: Active bonuses during the event
+
+Note: Unlike other event types, Research Day events may not use the `details` wrapper structure consistently.
 
 
 

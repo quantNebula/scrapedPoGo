@@ -8,45 +8,40 @@
 
 ```json
 {
-    "name": "Thundurus",
-    "originalName": "Thundurus (Incarnate)",
-    "form": "Incarnate",
+    "name": "Ekans",
+    "originalName": "Ekans",
+    "form": null,
     "gender": null,
-    "tier": "5-Star Raids",
+    "tier": "1-Star Raids",
     "isShadowRaid": false,
-    "eventStatus": "ongoing",
+    "eventStatus": "unknown",
     "canBeShiny": true,
     "types": [
         {
-            "name": "electric",
-            "image": "https://leekduck.com/assets/img/types/electric.png"
-        },
-        {
-            "name": "flying",
-            "image": "https://leekduck.com/assets/img/types/flying.png"
+            "name": "poison",
+            "image": "https://leekduck.com/assets/img/types/poison.png"
         }
     ],
     "combatPower": {
         "normal": {
-            "min": 1828,
-            "max": 1911
+            "min": 487,
+            "max": 529
         },
         "boosted": {
-            "min": 2285,
-            "max": 2389
+            "min": 609,
+            "max": 662
         }
     },
     "boostedWeather": [
         {
-            "name": "rainy",
-            "image": "https://leekduck.com/assets/img/weather/rainy.png"
-        },
-        {
-            "name": "windy",
-            "image": "https://leekduck.com/assets/img/weather/windy.png"
+            "name": "cloudy",
+            "image": "https://leekduck.com/assets/img/weather/cloudy.png"
         }
     ],
-    "image": "https://cdn.leekduck.com/assets/img/pokemon_icons/pm642.fINCARNATE.icon.png"
+    "image": "https://cdn.leekduck.com/assets/img/pokemon_icons/pm23.icon.png",
+    "imageWidth": 256,
+    "imageHeight": 256,
+    "imageType": "png"
 }
 ```
 ## Fields
@@ -64,7 +59,10 @@
 | **`types`**          | `Type[]`      | The type(s) of the Pokemon. See [Type](#Type).
 | **`combatPower`**    | `CombatPower` | The combat power range the Pokemon can be caught with. See [CombatPower](#CombatPower).
 | **`boostedWeather`** | `Weather[]`   | The type(s) of weather that boost the Pokemon's combat power. See [Weather](#Weather).
-| **`image`**          | `string`      | The image of the Pokemon.*
+| **`image`**          | `string`      | The image URL of the Pokemon.
+| **`imageWidth`**     | `int`         | The width of the image in pixels.
+| **`imageHeight`**    | `int`         | The height of the image in pixels.
+| **`imageType`**      | `string`      | The image format (e.g., `png`).
 
 ## Other Objects
 

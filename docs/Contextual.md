@@ -12,7 +12,6 @@ The `contextual.json` file is a unified, player-focused aggregation of all scrap
 
 ```json
 {
-  "metadata": { ... },
   "timeline": { ... },
   "currentAvailability": { ... },
   "pokemonIndex": [ ... ],
@@ -22,38 +21,14 @@ The `contextual.json` file is a unified, player-focused aggregation of all scrap
 
 ## Fields
 
-The contextual file contains five main sections:
+The contextual file contains four main sections:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `metadata` | object | Generation timestamp and source versions |
 | `timeline` | object | Events categorized by urgency |
 | `currentAvailability` | object | Unified availability by source type |
 | `pokemonIndex` | array | Cross-reference for all Pokemon sources |
 | `shinyOpportunities` | object | Shiny availability with current sources |
-
-### Metadata
-
-Provides generation timestamp and source file versions for cache invalidation.
-
-```json
-{
-  "generatedAt": "2026-01-25T00:13:32.250Z",
-  "sourceVersions": {
-    "events": "2026-01-25T00:02:25.080Z",
-    "raids": "2026-01-25T00:02:01.349Z",
-    "eggs": "2026-01-25T00:02:01.402Z",
-    "research": "2026-01-25T00:02:01.322Z",
-    "rocketLineups": "2026-01-25T00:02:01.211Z",
-    "shinies": "2026-01-25T00:00:58.145Z"
-  }
-}
-```
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `generatedAt` | string (ISO 8601) | Timestamp when the data was generated |
-| `sourceVersions` | object | Object containing timestamps of source files (events, raids, eggs, research, rocketLineups, shinies) |
 
 ### Timeline
 

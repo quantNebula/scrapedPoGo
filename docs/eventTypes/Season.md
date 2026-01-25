@@ -68,14 +68,16 @@ All Season events inherit the [core event fields](../Events.md#core-fields) and 
 
 ## Additional Sections
 
-Season events may include:
+Season events include a `details` object containing:
 
-- **`pokemon`**: Featured Pokémon for the season
-- **`spawns`**: Seasonal spawn pool changes
+- **`pokemon`**: Array of featured Pokémon objects with `imageWidth`, `imageHeight`, `imageType`, and `canBeShiny` fields
 - **`bonuses`**: Season-long active bonuses
-- **`fieldResearch`**: Season of Special Research
+- **`research`**: Season of Special Research
 - **`raids`**: Featured raid rotations
-- **`eggs`**: Seasonal egg pool changes
+- **`eggs`**: Seasonal egg pool changes organized by egg type
+- **`customSections`**: Additional season-specific content
+
+For detailed field documentation, see the main [Events documentation](../Events.md).
 
 
 

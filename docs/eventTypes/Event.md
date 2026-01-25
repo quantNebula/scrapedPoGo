@@ -68,14 +68,16 @@ All general events inherit the [core event fields](../Events.md#core-fields) and
 
 ## Additional Sections
 
-General events may include:
+General events include a `details` object containing:
 
-- **`pokemon`**: Featured Pokémon for the event
-- **`spawns`**: Wild Pokémon spawn details
-- **`bonuses`**: Active gameplay bonuses
-- **`fieldResearch`**: Event-specific research tasks
+- **`pokemon`**: Array of featured Pokémon objects with `imageWidth`, `imageHeight`, `imageType`, `source`, and `canBeShiny` fields
+- **`bonuses`**: Array of active gameplay bonuses
+- **`research`**: Event-specific research tasks
 - **`raids`**: Featured raid bosses
 - **`eggs`**: Egg hatch pool changes
+- **`customSections`**: Additional event-specific content
+
+For detailed field documentation, see the main [Events documentation](../Events.md).
 
 
 

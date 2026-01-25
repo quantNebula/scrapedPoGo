@@ -61,10 +61,12 @@ All GO Battle League events inherit the [core event fields](../Events.md#core-fi
 
 ## Additional Sections
 
-GO Battle League events may include:
+GO Battle League events include a `details` object containing:
 
+- **`battle`**: League and cup rotation details with CP restrictions and rules
 - **`bonuses`**: Season rewards and rank-up bonuses
-- **`details`**: Cup rotation schedules and CP restrictions
+
+For detailed field documentation, see the main [Events documentation](../Events.md).
 
 
 

@@ -61,13 +61,15 @@ All GO Pass events inherit the [core event fields](../Events.md#core-fields) and
 
 ## Additional Sections
 
-GO Pass events may include:
+GO Pass events include a `details` object containing:
 
-- **`pokemon`**: Exclusive Pokémon available only to ticket holders
-- **`spawns`**: Special spawn pools for ticket holders
-- **`bonuses`**: Exclusive bonuses for participants
-- **`fieldResearch`**: Special Research available with ticket
+- **`pokemon`**: Array of exclusive Pokémon objects with `imageWidth`, `imageHeight`, `imageType`, and `canBeShiny` fields
+- **`bonuses`**: Array of exclusive bonuses for ticket holders
+- **`research`**: Special Research available with ticket purchase
 - **`raids`**: Featured raid bosses during the event
+- **`pricing`**: Ticket pricing and tier information
+
+For detailed field documentation, see the main [Events documentation](../Events.md).
 
 
 

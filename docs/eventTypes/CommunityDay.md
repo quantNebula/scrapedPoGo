@@ -68,11 +68,15 @@ All Community Day events inherit the [core event fields](../Events.md#core-field
 
 ## Additional Sections
 
-Community Day events may include:
+Community Day events include a `details` object containing:
 
-- **`pokemon`**: Featured Pokémon with shiny availability
-- **`bonuses`**: XP, Stardust, or other gameplay bonuses
-- **`fieldResearch`**: Special research tasks available during the event
+- **`pokemon`**: Array of featured Pokémon objects with `imageWidth`, `imageHeight`, `imageType`, `source`, and `canBeShiny` fields
+- **`bonuses`**: Array of XP, Stardust, or other gameplay bonuses
+- **`research`**: Special research tasks available during the event
+- **`shinies`**: Array of shiny Pokémon available
+- **`rewards`**: Event rewards and ticket information
+
+For detailed field documentation, see the main [Events documentation](../Events.md).
 
 ## Notes
 

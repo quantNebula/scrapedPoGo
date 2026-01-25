@@ -61,11 +61,14 @@ All Team GO Rocket events inherit the [core event fields](../Events.md#core-fiel
 
 ## Additional Sections
 
-Team GO Rocket events may include:
+Team GO Rocket events include a `details` object containing:
 
-- **`pokemon`**: New Shadow Pokémon or featured Shadow Pokémon
-- **`bonuses`**: Bonuses related to Team GO Rocket battles
-- **`fieldResearch`**: Rocket-themed research tasks
+- **`pokemon`**: Array of new or featured Shadow Pokémon objects with `imageWidth`, `imageHeight`, `imageType`, and `canBeShiny` fields
+- **`bonuses`**: Array of bonuses related to Team GO Rocket battles
+- **`research`**: Rocket-themed research tasks
+- **`rocket`**: Detailed Shadow Pokémon lineup information
+
+For detailed field documentation, see the main [Events documentation](../Events.md).
 
 
 

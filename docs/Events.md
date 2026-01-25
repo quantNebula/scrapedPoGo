@@ -81,8 +81,11 @@ Events are now **logically segmented** with a `details` wrapper containing all s
         "pokemon": [
             {
                 "name": "Vulpix",
-                "image": "https://cdn.leekduck.com/assets/img/pokemon_icons/...",
+                "image": "https://cdn.leekduck.com/assets/img/pokemon_icons/pokemon_icon_037_00.png",
                 "canBeShiny": true,
+                "imageWidth": 256,
+                "imageHeight": 256,
+                "imageType": "png",
                 "source": "spawn"
             }
         ],
@@ -132,7 +135,6 @@ All events contain these core fields:
 | **`image`**     | `string` | The header/thumbnail image for the event.
 | **`start`**     | `string` | The start date of the event (Can be null). See [Note for Start/End dates](#note-for-startend-dates)
 | **`end`**       | `string` | The end date of the event (Can be null). See [Note for Start/End dates](#note-for-startend-dates)
-| **`link`**      | `string` | A link to the event post on LeekDuck's site.
 
 ## Segmented Sections
 
@@ -312,23 +314,16 @@ Events are organized into **logical sections** based on their content. The follo
 
 ```json
 {
-    "eventID": "mantine-spotlight-hour",
-    "name": "Mantine Spotlight Hour",
+    "eventID": "pokemonspotlighthour2026-01-27",
+    "name": "Foongus",
     "eventType": "pokemon-spotlight-hour",
+    "heading": "Pokemon Spotlight Hour",
+    "image": "https://cdn.leekduck.com/assets/img/pokemon_icons/pokemon_icon_590_00.png",
+    "start": "2026-01-27T18:00:00.000",
+    "end": "2026-01-27T19:00:00.000",
     "flags": {...},
-    "pokemon": {
-        "featured": {
-            "name": "Mantine",
-            "image": "https://www.leekduck.com/assets/img/pokemon_icons/pokemon_icon_226_00.png",
-            "canBeShiny": true
-        }
-    },
-    "rewards": {
-        "bonuses": [{
-            "text": "2× Transfer Candy",
-            "image": "..."
-        }]
-    }
+    "canBeShiny": true,
+    "bonus": "2× Catch Stardust"
 }
 ```
 
@@ -490,17 +485,15 @@ Events are organized into **logical sections** based on their content. The follo
 
 ```json
 {
-    "eventID": "kyogre-raid-hour",
+    "eventID": "raidhour20260128",
+    "name": "Tornadus (Incarnate Forme) Raid Hour",
     "eventType": "raid-hour",
+    "heading": "Raid Hour",
+    "image": "https://cdn.leekduck.com/assets/img/events/raidhour.jpg",
+    "start": "2026-01-28T18:00:00.000",
+    "end": "2026-01-28T19:00:00.000",
     "flags": {...},
-    "pokemon": {
-        "featured": {
-            "name": "Kyogre",
-            "image": "https://www.leekduck.com/assets/img/pokemon_icons/pokemon_icon_382_00.png",
-            "canBeShiny": true
-        }
-    },
-    "canBeShiny": true
+    "canBeShiny": false
 }
 ```
 

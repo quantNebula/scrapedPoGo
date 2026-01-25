@@ -61,13 +61,17 @@ All Pokémon GO Tour events inherit the [core event fields](../Events.md#core-fi
 
 ## Additional Sections
 
-Pokémon GO Tour events may include:
+Pokémon GO Tour events include a `details` object containing:
 
-- **`pokemon`**: Featured regional Pokémon and exclusive spawns
-- **`spawns`**: Extensive spawn pool for the featured region
-- **`bonuses`**: Special bonuses for ticket holders
-- **`fieldResearch`**: Exclusive Special Research
+- **`pokemon`**: Array of featured regional Pokémon objects with `imageWidth`, `imageHeight`, `imageType`, and `canBeShiny` fields
+- **`bonuses`**: Array of special bonuses for ticket holders
+- **`research`**: Exclusive Special Research and Masterwork Research
 - **`raids`**: Featured raid bosses throughout the event
+- **`eggs`**: Event-specific egg pool
+- **`habitats`**: Location-specific spawn pools (for in-person events)
+- **`customSections`**: Additional tour-specific content
+
+For detailed field documentation, see the main [Events documentation](../Events.md).
 
 
 

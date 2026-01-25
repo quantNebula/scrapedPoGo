@@ -61,10 +61,12 @@ All Research events inherit the [core event fields](../Events.md#core-fields) an
 
 ## Additional Sections
 
-Research events may include:
+Research events include a `details` object containing:
 
-- **`pokemon`**: Featured Pokémon rewards
-- **`fieldResearch`**: Research tasks and rewards
+- **`research`**: Research task details, steps, and rewards
+- **`pokemon`**: Array of featured Pokémon reward objects with `imageWidth`, `imageHeight`, `imageType`, and `canBeShiny` fields
+
+For detailed field documentation, see the main [Events documentation](../Events.md).
 
 
 

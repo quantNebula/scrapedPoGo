@@ -61,10 +61,12 @@ All Max Battle events inherit the [core event fields](../Events.md#core-fields) 
 
 ## Additional Sections
 
-Max Battle events may include:
+Max Battle events include a `details` object containing:
 
-- **`pokemon`**: Featured Dynamax Pokémon details
-- **`bonuses`**: Any active bonuses during the rotation
+- **`pokemon`**: Array of featured Dynamax Pokémon objects with `imageWidth`, `imageHeight`, `imageType`, and `canBeShiny` fields
+- **`bonuses`**: Array of any active bonuses during the rotation
+
+For detailed field documentation, see the main [Events documentation](../Events.md).
 
 
 

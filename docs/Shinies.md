@@ -19,25 +19,24 @@ npm run scrapeshinies
 
 ## Response Structure
 
+The endpoint returns a JSON array of shiny Pokémon entries:
+
 ```json
-{
-  "lastUpdated": "2026-01-24T20:15:45.514Z",
-  "source": "LeekDuck",
-  "sourceUrl": "https://leekduck.com/shiny/",
-  "totalShinies": 272,
-  "shinies": [...]
-}
+[
+  {
+    "dexNumber": 1,
+    "name": "Bulbasaur",
+    "releasedDate": "2018/03/25",
+    "family": "Bulbasaur",
+    "typeCode": null,
+    "forms": [...],
+    "imageUrl": "...",
+    "width": 256,
+    "height": 256
+  },
+  ...
+]
 ```
-
-### Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `lastUpdated` | string (ISO 8601) | Timestamp of when the data was last scraped |
-| `source` | string | Name of the source |
-| `sourceUrl` | string | URL to the source page |
-| `totalShinies` | number | Total count of unique Pokémon entries with shiny variants |
-| `shinies` | array | Array of Pokémon with shiny data |
 
 ## Shiny Entry Structure
 
@@ -137,10 +136,10 @@ This dual-check ensures maximum accuracy.
 
 ### Check if a specific Pokémon has shiny
 ```javascript
-fetch('https://quantnebula.github.io/scrapedPoGo/shinies.json')
+fetch('https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/shinies.min.json')
   .then(r => r.json())
   .then(data => {
-    const bulbasaur = data.shinies.find(p => 
+    const bulbasaur = data.find(p => 
       p.dexNumber === 1 && !p.typeCode
     );
     console.log(`Bulbasaur shiny released: ${bulbasaur?.releasedDate}`);
@@ -149,10 +148,10 @@ fetch('https://quantnebula.github.io/scrapedPoGo/shinies.json')
 
 ### Get all Pokémon with costume variants
 ```javascript
-fetch('https://quantnebula.github.io/scrapedPoGo/shinies.json')
+fetch('https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/shinies.min.json')
   .then(r => r.json())
   .then(data => {
-    const withCostumes = data.shinies.filter(p => 
+    const withCostumes = data.filter(p => 
       p.forms && p.forms.length > 0
     );
     console.log(`${withCostumes.length} Pokémon have costume shiny variants`);
@@ -161,10 +160,10 @@ fetch('https://quantnebula.github.io/scrapedPoGo/shinies.json')
 
 ### Find all Alolan shinies
 ```javascript
-fetch('https://quantnebula.github.io/scrapedPoGo/shinies.json')
+fetch('https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/shinies.min.json')
   .then(r => r.json())
   .then(data => {
-    const alolan = data.shinies.filter(p => p.typeCode === '_61');
+    const alolan = data.filter(p => p.typeCode === '_61');
     console.log(`${alolan.length} Alolan Pokémon have shinies`);
     alolan.forEach(p => console.log(p.name));
   });
@@ -172,10 +171,10 @@ fetch('https://quantnebula.github.io/scrapedPoGo/shinies.json')
 
 ### Get shinies released in a specific year
 ```javascript
-fetch('https://quantnebula.github.io/scrapedPoGo/shinies.json')
+fetch('https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/shinies.min.json')
   .then(r => r.json())
   .then(data => {
-    const year2018 = data.shinies.filter(p => 
+    const year2018 = data.filter(p => 
       p.releasedDate?.startsWith('2018/')
     );
     console.log(`${year2018.length} shinies released in 2018`);

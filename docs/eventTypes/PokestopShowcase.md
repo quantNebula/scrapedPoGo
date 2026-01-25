@@ -61,10 +61,12 @@ All PokéStop Showcase events inherit the [core event fields](../Events.md#core-
 
 ## Additional Sections
 
-PokéStop Showcase events may include:
+PokéStop Showcase events typically have minimal additional data. When present, they may include:
 
-- **`pokemon`**: Featured Pokémon eligible for entry
-- **`details`**: Competition rules and judging criteria
+- **`description`**: Competition rules and judging criteria
+- **`featured`**: Featured Pokémon eligible for entry
+
+Note: Unlike other event types, PokéStop Showcase events may not use the `details` wrapper structure consistently.
 
 
 
