@@ -2,7 +2,7 @@
 
 > **Purpose**: This document provides complete API documentation for all scrapedPoGo endpoints in a single file, suitable for LLM context or offline reference. No external file traversal required.
  
-**Last Documentation Update**: January 2026
+**Last Documentation Update**: January 2025
 
 
 ## Overview
@@ -621,6 +621,9 @@ Most parsers (e.g., JavaScript's `Date.parse()`) handle this automatically.
 | `combatPower` | `CombatPower` | The combat power range for catching. |
 | `boostedWeather` | `Weather[]` | Weather types that boost CP. |
 | `image` | `string` | The image URL of the Pokémon. |
+| `imageWidth` | `number` | The width of the Pokémon image in pixels. |
+| `imageHeight` | `number` | The height of the Pokémon image in pixels. |
+| `imageType` | `string` | The image file type (e.g., `PNG`, `JPG`). |
 
 ### Type Object
 
@@ -743,6 +746,9 @@ Rewards can be one of three types: `encounter`, `item`, or `resource`.
 | `type` | `string` | The type of reward. Can be `encounter`, `item`, `resource`. |
 | `name` | `string` | The name of the reward (Pokémon name or item name). |
 | `image` | `string` | The image URL of the reward. |
+| `imageWidth` | `number` | The width of the reward image in pixels. |
+| `imageHeight` | `number` | The height of the reward image in pixels. |
+| `imageType` | `string` | The image file type (e.g., `PNG`, `JPG`). |
 
 #### Encounter-Only Fields
 
@@ -789,7 +795,13 @@ Rewards can be one of three types: `encounter`, `item`, or `resource`.
 | `name` | `string` | The name of the hatched Pokémon. |
 | `eggType` | `string` | The type of the egg. Can be `2 km`, `5 km`, `7 km`, `10 km`, `12 km`. |
 | `isAdventureSync` | `boolean` | Whether the egg is obtained from Adventure Sync. |
+| `isRegional` | `boolean` | Whether the Pokémon is regional. |
+| `isGiftExchange` | `boolean` | Whether the egg is obtained from gift exchanges (7 km eggs). |
+| `rarity` | `string` | The rarity tier of the Pokémon in the egg pool (e.g., `Common`, `Rare`, `Ultra Rare`). |
 | `image` | `string` | The image URL of the hatched Pokémon. |
+| `imageWidth` | `number` | The width of the Pokémon image in pixels. |
+| `imageHeight` | `number` | The height of the Pokémon image in pixels. |
+| `imageType` | `string` | The image file type (e.g., `PNG`, `JPG`). |
 | `canBeShiny` | `boolean` | Whether the hatched Pokémon can be shiny. |
 | `combatPower.min` | `int` | The minimum combat power of the hatched Pokémon. |
 | `combatPower.max` | `int` | The maximum combat power of the hatched Pokémon. |
@@ -882,6 +894,9 @@ Rewards can be one of three types: `encounter`, `item`, or `resource`.
 |-------|------|-------------|
 | `name` | `string` | The name of the Shadow Pokémon. |
 | `image` | `string` | The image URL of the Pokémon. |
+| `imageWidth` | `number` | The width of the Pokémon image in pixels. |
+| `imageHeight` | `number` | The height of the Pokémon image in pixels. |
+| `imageType` | `string` | The image file type (e.g., `PNG`, `JPG`). |
 | `types` | `string[]` | The type(s) of the Pokémon (lowercase). |
 | `weaknesses` | `Weaknesses` | The weaknesses of the Pokémon. |
 | `isEncounter` | `boolean` | Whether this Pokémon can be caught after winning. |
