@@ -50,8 +50,14 @@ https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/
     "image": "https://www.leekduck.com/assets/img/events/raidhour.jpg",
     "start": "2022-06-01T18:00:00.000",
     "end": "2022-06-01T19:00:00.000",
-    "hasSpawns": false,
-    "hasFieldResearchTasks": false
+    "flags": {
+        "hasSpawns": false,
+        "hasFieldResearchTasks": false,
+        "hasBonuses": false,
+        "hasRaids": true,
+        "hasEggs": false,
+        "hasShiny": false
+    }
 }
 ```
 
@@ -66,8 +72,18 @@ https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/
 | `image` | `string` | The header/thumbnail image for the event. |
 | `start` | `string\|null` | The start date of the event. See [Date Format Notes](#date-format-notes). |
 | `end` | `string\|null` | The end date of the event. See [Date Format Notes](#date-format-notes). |
+| `flags` | `object` | Object containing boolean flags for event features. See [Flags Object](#flags-object). |
+
+#### Flags Object
+
+| Field | Type | Description |
+|-------|------|-------------|
 | `hasSpawns` | `boolean` | Whether the event has special spawns. |
 | `hasFieldResearchTasks` | `boolean` | Whether the event has field research tasks. |
+| `hasBonuses` | `boolean` | Whether the event has bonuses (e.g., bonus XP, candy, etc.). |
+| `hasRaids` | `boolean` | Whether the event has raid content. |
+| `hasEggs` | `boolean` | Whether the event has special egg hatches. |
+| `hasShiny` | `boolean` | Whether the event introduces new shiny releases. |
 
 **Note**: Events may contain additional fields specific to their type. See [Event Type Specific Fields](#event-type-specific-fields).
 
