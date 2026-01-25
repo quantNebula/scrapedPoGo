@@ -36,7 +36,6 @@ https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/
 ## Events Endpoint
 
 ### Endpoints
-- **Formatted**: `https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/events.json`
 - **Minimized**: `https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/events.min.json`
 
 ### Example Event Object

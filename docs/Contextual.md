@@ -1,6 +1,5 @@
 # Endpoints
 
-- Formatted: `https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/contextual.json`
 - Minified: `https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/contextual.min.json`
 
 # Overview
