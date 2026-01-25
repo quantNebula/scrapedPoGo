@@ -75,9 +75,11 @@ Events categorized by urgency with priority scoring.
 | `eventID` | string | Unique identifier |
 | `name` | string | Display name |
 | `eventType` | string | Type (raid-day, community-day, event, etc.) |
-| `start` / `end` | string (ISO 8601) | ISO timestamps |
+| `start` | string (ISO 8601) | Event start timestamp |
+| `end` | string (ISO 8601) | Event end timestamp |
 | `priority` | number | Calculated score (higher = more important) |
-| `endsIn` / `startsIn` | string | Human-readable duration |
+| `endsIn` | string | Human-readable duration until event ends |
+| `startsIn` | string | Human-readable duration until event starts |
 | `hasShiny` | boolean | Event has shiny opportunities |
 | `hasRaids` | boolean | Event has raid-related content |
 | `hasEggs` | boolean | Event has egg-related content |
