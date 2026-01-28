@@ -7,9 +7,8 @@
     "scrape": "node ./src/scrapers/scrape.js",
     "detailedscrape": "node ./src/scrapers/detailedscrape.js",
     "combinedetails": "node ./src/scrapers/combinedetails.js",
-    "combinecontextual": "node ./src/scrapers/combineContextual.js",
     "scrapeshinies": "node ./src/scrapers/scrapeShinies.js",
-    "pipeline": "npm run scrapeshinies && npm run scrape && npm run detailedscrape && npm run combinedetails && npm run combinecontextual"
+    "pipeline": "npm run scrapeshinies && npm run scrape && npm run detailedscrape && npm run combinedetails"
   },
   "author": "quantNebula",
   "license": "MIT",

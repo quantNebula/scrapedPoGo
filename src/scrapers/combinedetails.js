@@ -23,16 +23,15 @@ function sanitizeType(type) {
 }
 
 /**
- * Segments event data into logical sections for better organization.
- * Moves event-specific fields into a 'details' wrapper with nested sections:
- * pokemon, raids, battle, rocket, eggs, bonuses, research, rewards, showcases, shinies, etc.
- * Flags are computed based on actual data presence.
+ * Flattens event data into a consistent top-level structure.
+ * All data fields are placed at the top level (no details wrapper).
+ * No flags object is computed - consumers can check for field presence directly.
  * 
  * @param {Object} event - Event object with flat structure
- * @returns {Object} Event with segmented structure including details wrapper
+ * @returns {Object} Event with flattened structure, all fields at top level
  */
 function segmentEventData(event) {
-    const segmented = {
+    const flattened = {
         eventID: event.eventID,
         name: event.name,
         eventType: event.eventType,
@@ -41,9 +40,6 @@ function segmentEventData(event) {
         start: event.start,
         end: event.end
     };
-
-    // Build the details object
-    const details = {};
 
     // Helper to filter valid pokemon objects (must have name property)
     const isValidPokemon = (p) => p && typeof p === 'object' && p.name;
@@ -68,7 +64,7 @@ function segmentEventData(event) {
     if (event.maxPokemonDebuts && event.maxPokemonDebuts.length > 0) {
         pokemon.push(...event.maxPokemonDebuts.filter(isValidPokemon).map(p => ({ ...p, source: 'maxDebut' })));
     }
-    if (pokemon.length > 0) details.pokemon = pokemon;
+    if (pokemon.length > 0) flattened.pokemon = pokemon;
 
     // Raids section
     const raids = [];
@@ -98,16 +94,16 @@ function segmentEventData(event) {
             });
         }
     }
-    if (raids.length > 0) details.raids = raids;
+    if (raids.length > 0) flattened.raids = raids;
     // Also include raid-specific metadata
-    if (event.alternationPattern) details.raidAlternation = event.alternationPattern;
-    if (event.featuredAttacks && event.featuredAttacks.length > 0) details.raidFeaturedAttacks = event.featuredAttacks;
+    if (event.alternationPattern) flattened.raidAlternation = event.alternationPattern;
+    if (event.featuredAttacks && event.featuredAttacks.length > 0) flattened.raidFeaturedAttacks = event.featuredAttacks;
 
     // Battle section (GBL)
     const battle = {};
     if (event.leagues && event.leagues.length > 0) battle.leagues = event.leagues;
     if (event.featuredAttack) battle.featuredAttack = event.featuredAttack;
-    if (Object.keys(battle).length > 0) details.battle = battle;
+    if (Object.keys(battle).length > 0) flattened.battle = battle;
 
     // Rocket section
     const rocket = {};
@@ -115,18 +111,18 @@ function segmentEventData(event) {
     if (event.leaders && event.leaders.length > 0) rocket.leaders = event.leaders;
     if (event.giovanni) rocket.giovanni = event.giovanni;
     if (event.grunts && event.grunts.length > 0) rocket.grunts = event.grunts;
-    if (Object.keys(rocket).length > 0) details.rocket = rocket;
+    if (Object.keys(rocket).length > 0) flattened.rocket = rocket;
 
     // Eggs section - handle both array format and object format (for seasons)
     if (event.eggs) {
         if (Array.isArray(event.eggs) && event.eggs.length > 0) {
             // Standard array format from events
-            details.eggs = event.eggs;
+            flattened.eggs = event.eggs;
         } else if (typeof event.eggs === 'object' && !Array.isArray(event.eggs)) {
             // Object format from seasons: { '2km': [...], '5km': [...], ... }
             const hasEggData = Object.values(event.eggs).some(arr => Array.isArray(arr) && arr.length > 0);
             if (hasEggData) {
-                details.eggs = event.eggs;
+                flattened.eggs = event.eggs;
             }
         }
     }
@@ -136,13 +132,13 @@ function segmentEventData(event) {
     if (event.bonuses && event.bonuses.length > 0) {
         bonuses.push(...event.bonuses);
     }
-    if (bonuses.length > 0) details.bonuses = bonuses;
+    if (bonuses.length > 0) flattened.bonuses = bonuses;
     if (event.bonusDisclaimers && event.bonusDisclaimers.length > 0) {
-        details.bonusDisclaimers = event.bonusDisclaimers;
+        flattened.bonusDisclaimers = event.bonusDisclaimers;
     }
-    if (event.lureModuleBonus) details.lureModuleBonus = event.lureModuleBonus;
+    if (event.lureModuleBonus) flattened.lureModuleBonus = event.lureModuleBonus;
     if (event.exclusiveBonuses && event.exclusiveBonuses.length > 0) {
-        details.exclusiveBonuses = event.exclusiveBonuses;
+        flattened.exclusiveBonuses = event.exclusiveBonuses;
     }
 
     // Research section
@@ -162,7 +158,7 @@ function segmentEventData(event) {
     if (event.masterworkResearch && event.masterworkResearch.length > 0) {
         research.masterwork = event.masterworkResearch;
     }
-    if (Object.keys(research).length > 0) details.research = research;
+    if (Object.keys(research).length > 0) flattened.research = research;
 
     // Rewards/Ticket section
     const rewards = {};
@@ -170,90 +166,62 @@ function segmentEventData(event) {
     if (event.ticketBonuses && event.ticketBonuses.length > 0) rewards.ticketBonuses = event.ticketBonuses;
     if (event.ticketPrice) rewards.ticketPrice = event.ticketPrice;
     if (event.ticketAddOns && event.ticketAddOns.length > 0) rewards.ticketAddOns = event.ticketAddOns;
-    if (Object.keys(rewards).length > 0) details.rewards = rewards;
+    if (Object.keys(rewards).length > 0) flattened.rewards = rewards;
 
     // Showcases section
     if (event.pokestopShowcases && event.pokestopShowcases.length > 0) {
-        details.showcases = event.pokestopShowcases;
+        flattened.showcases = event.pokestopShowcases;
     }
 
     // Shinies section
     if (event.shinies && event.shinies.length > 0) {
-        details.shinies = event.shinies;
+        flattened.shinies = event.shinies;
     }
     if (event.shinyDebuts && event.shinyDebuts.length > 0) {
-        details.shinyDebuts = event.shinyDebuts;
+        flattened.shinyDebuts = event.shinyDebuts;
     }
 
     // Photobomb section
     if (event.photobomb) {
-        details.photobomb = event.photobomb;
+        flattened.photobomb = event.photobomb;
     }
 
     // Season-specific sections
-    if (event.communityDays && event.communityDays.length > 0) details.communityDays = event.communityDays;
-    if (event.features && event.features.length > 0) details.features = event.features;
-    if (event.goBattleLeague) details.goBattleLeague = event.goBattleLeague;
+    if (event.communityDays && event.communityDays.length > 0) flattened.communityDays = event.communityDays;
+    if (event.features && event.features.length > 0) flattened.features = event.features;
+    if (event.goBattleLeague) flattened.goBattleLeague = event.goBattleLeague;
     
     // GO Pass specific sections
-    if (event.goPass) details.goPass = event.goPass;
-    if (event.pricing) details.pricing = event.pricing;
-    if (event.pointTasks) details.pointTasks = event.pointTasks;
-    if (event.ranks && event.ranks.length > 0) details.ranks = event.ranks;
-    if (event.featuredPokemon && event.featuredPokemon.length > 0) details.featuredPokemon = event.featuredPokemon;
-    if (event.milestoneBonuses) details.milestoneBonuses = event.milestoneBonuses;
+    if (event.goPass) flattened.goPass = event.goPass;
+    if (event.pricing) flattened.pricing = event.pricing;
+    if (event.pointTasks) flattened.pointTasks = event.pointTasks;
+    if (event.ranks && event.ranks.length > 0) flattened.ranks = event.ranks;
+    if (event.featuredPokemon && event.featuredPokemon.length > 0) flattened.featuredPokemon = event.featuredPokemon;
+    if (event.milestoneBonuses) flattened.milestoneBonuses = event.milestoneBonuses;
 
     // GO Tour specific sections
-    if (event.eventInfo) details.eventInfo = event.eventInfo;
-    if (event.habitats && event.habitats.length > 0) details.habitats = event.habitats;
-    if (event.whatsNew && event.whatsNew.length > 0) details.whatsNew = event.whatsNew;
-    if (event.sales && event.sales.length > 0) details.sales = event.sales;
+    if (event.eventInfo) flattened.eventInfo = event.eventInfo;
+    if (event.habitats && event.habitats.length > 0) flattened.habitats = event.habitats;
+    if (event.whatsNew && event.whatsNew.length > 0) flattened.whatsNew = event.whatsNew;
+    if (event.sales && event.sales.length > 0) flattened.sales = event.sales;
 
     // Custom sections from generic event scraper
     if (event.customSections && Object.keys(event.customSections).length > 0) {
-        details.customSections = event.customSections;
+        flattened.customSections = event.customSections;
     }
 
     // Max Battles specific
-    if (event.maxBattles) details.maxBattles = event.maxBattles;
-    if (event.maxMondays) details.maxMondays = event.maxMondays;
+    if (event.maxBattles) flattened.maxBattles = event.maxBattles;
+    if (event.maxMondays) flattened.maxMondays = event.maxMondays;
 
     // Description (if present)
-    if (event.description) details.description = event.description;
-
-    // Only add details if there's actual content
-    if (Object.keys(details).length > 0) {
-        segmented.details = details;
-    }
-
-    // Compute flags based on actual data presence
-    // Helper for eggs - can be array or object format
-    const hasEggsData = () => {
-        if (!details.eggs) return false;
-        if (Array.isArray(details.eggs)) return details.eggs.length > 0;
-        // Object format: check if any tier has Pokemon
-        return Object.values(details.eggs).some(arr => Array.isArray(arr) && arr.length > 0);
-    };
-
-    segmented.flags = {
-        hasSpawns: !!(details.pokemon && details.pokemon.some(p => p.source === 'spawn')),
-        hasFieldResearchTasks: !!(details.research && details.research.field && details.research.field.length > 0),
-        hasBonuses: !!(details.bonuses && details.bonuses.length > 0),
-        hasRaids: !!(details.raids && details.raids.length > 0),
-        hasEggs: hasEggsData(),
-        hasShiny: !!(details.shinies && details.shinies.length > 0),
-        hasShowcases: !!(details.showcases && details.showcases.length > 0),
-        hasRocket: !!(details.rocket && Object.keys(details.rocket).length > 0),
-        hasBattle: !!(details.battle && Object.keys(details.battle).length > 0),
-        hasResearch: !!(details.research && Object.keys(details.research).length > 0),
-        hasRewards: !!(details.rewards && Object.keys(details.rewards).length > 0)
-    };
+    if (event.description) flattened.description = event.description;
 
     // Special properties at top level
-    if (event.canBeShiny !== undefined) segmented.canBeShiny = event.canBeShiny;
-    if (event.bonus) segmented.bonus = event.bonus;
+    if (event.canBeShiny !== undefined) flattened.canBeShiny = event.canBeShiny;
+    if (event.bonus) flattened.bonus = event.bonus;
 
-    return segmented;
+    return flattened;
 }
 
 /**
@@ -323,17 +291,17 @@ function main()
 {
     const eventsData = JSON.parse(fs.readFileSync("./data/events.min.json"));
     
-    // Flatten events data if it's in eventType-keyed object format
-    // This handles both array format (from fresh scrape) and object format (from previous run)
+    // Flatten events data - handle both array format and eventType-keyed object format
     let events = [];
     if (Array.isArray(eventsData)) {
-        // Old/fresh format: already an array
+        // Array format: use as-is (already has complete event data)
+        // Don't strip data - this preserves detailed fields from previous runs
         events = eventsData;
     } else if (eventsData && typeof eventsData === 'object') {
-        // New format: { "event-type": [...], "another-type": [...] }
+        // Legacy object format: { "event-type": [...], "another-type": [...] }
+        // Extract just core fields for re-merging with temp detail files
         Object.values(eventsData).forEach(typeArray => {
             if (Array.isArray(typeArray)) {
-                // Strip out any existing details/segmented structure to get flat events for re-merging
                 typeArray.forEach(e => {
                     const flatEvent = {
                         eventID: e.eventID,
@@ -422,29 +390,40 @@ function main()
 }
 
 /**
- * Writes the segmented event output to both main and per-type files.
+ * Writes the flattened event output to both main and per-type files.
+ * Main events.min.json is now a flat array sorted by start date.
+ * Per-type files are still generated for backward compatibility.
  * 
  * @param {Object[]} events - Array of flat event objects with merged detail data
  */
 function writeSegmentedOutput(events) {
-    // Group events by eventType with segmented structure
-    const eventsByType = {};
-    events.forEach(event => {
-        const segmentedEvent = segmentEventData(event);
-        const type = segmentedEvent.eventType || 'unknown';
-        if (!eventsByType[type]) {
-            eventsByType[type] = [];
-        }
-        eventsByType[type].push(segmentedEvent);
+    // Transform all events with flattened structure
+    const allEvents = events.map(event => segmentEventData(event));
+
+    // Sort by start date for chronological order
+    allEvents.sort((a, b) => {
+        const dateA = a.start ? new Date(a.start) : new Date(0);
+        const dateB = b.start ? new Date(b.start) : new Date(0);
+        return dateA - dateB;
     });
 
-    // Write main events file with eventType-keyed structure
-    fs.writeFile('data/events.min.json', JSON.stringify(eventsByType), err => {
+    // Write main events file as a flat array
+    fs.writeFile('data/events.min.json', JSON.stringify(allEvents), err => {
         if (err) {
             console.error(err);
             return;
         }
-        console.log('Created data/events.min.json with eventType-keyed structure');
+        console.log('Created data/events.min.json as flat array with ' + allEvents.length + ' events');
+    });
+
+    // Group by eventType for per-type files (backward compatibility)
+    const eventsByType = {};
+    allEvents.forEach(event => {
+        const type = event.eventType || 'unknown';
+        if (!eventsByType[type]) {
+            eventsByType[type] = [];
+        }
+        eventsByType[type].push(event);
     });
 
     // Generate per-eventType files with matching structure
