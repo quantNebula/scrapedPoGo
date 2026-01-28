@@ -47,10 +47,14 @@ function segmentEventData(event) {
     // If event already has consolidated fields (already flattened),
     // AND doesn't have the pre-flatten fields,
     // preserve it as-is to make this function idempotent
-    const hasConsolidatedFields = event.pokemon || event.raids || event.battle || event.rocket || event.research || event.rewards;
-    const hasPreFlattenFields = event.spawns || event.featured || event.incenseEncounters || 
-                                 event.costumedPokemon || event.pokemonDebuts || event.maxPokemonDebuts ||
-                                 event.bosses || event.tiers;
+    // Use 'in' operator to check for property existence regardless of value
+    const hasConsolidatedFields = ('pokemon' in event) || ('raids' in event) || 
+                                   ('battle' in event) || ('rocket' in event) || 
+                                   ('research' in event) || ('rewards' in event);
+    const hasPreFlattenFields = ('spawns' in event) || ('featured' in event) || 
+                                 ('incenseEncounters' in event) || ('costumedPokemon' in event) || 
+                                 ('pokemonDebuts' in event) || ('maxPokemonDebuts' in event) ||
+                                 ('bosses' in event) || ('tiers' in event);
     const isAlreadyFlattened = hasConsolidatedFields && !hasPreFlattenFields;
     
     if (isAlreadyFlattened) {
