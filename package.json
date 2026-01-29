@@ -8,7 +8,8 @@
     "detailedscrape": "node ./src/scrapers/detailedscrape.js",
     "combinedetails": "node ./src/scrapers/combinedetails.js",
     "scrapeshinies": "node ./src/scrapers/scrapeShinies.js",
-    "pipeline": "npm run scrapeshinies && npm run scrape && npm run detailedscrape && npm run combinedetails"
+    "pipeline": "npm run scrapeshinies && npm run scrape && npm run detailedscrape && npm run combinedetails",
+    "validate": "node ./scripts/validate-schemas.js"
   },
   "author": "quantNebula",
   "license": "MIT",
@@ -16,5 +17,9 @@
     "image-size": "^2.0.2",
     "jsdom": "27.4.0",
     "moment": "latest"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
   }
 }

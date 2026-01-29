@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/ayy-j/scrapedPoGo/main/schemas/eggs.schema.json",
+  "title": "Pokemon GO Eggs Data",
+  "description": "Schema for Pokemon GO egg hatch data from LeekDuck",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "name",
+      "eggType",
+      "isAdventureSync",
+      "image",
+      "canBeShiny",
+      "combatPower",
+      "isRegional",
+      "isGiftExchange",
+      "rarity",
+      "imageWidth",
+      "imageHeight",
+      "imageType"
+    ],
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The name of the hatched Pokemon"
+      },
+      "eggType": {
+        "type": "string",
+        "description": "The type of the egg",
+        "enum": ["1 km", "2 km", "5 km", "7 km", "10 km", "12 km"]
+      },
+      "isAdventureSync": {
+        "type": "boolean",
+        "description": "Whether or not the egg is obtained from Adventure Sync"
+      },
+      "image": {
+        "type": "string",
+        "format": "uri",
+        "description": "The image URL of the hatched Pokemon"
+      },
+      "canBeShiny": {
+        "type": "boolean",
+        "description": "Whether or not the hatched Pokemon can be shiny"
+      },
+      "combatPower": {
+        "type": "object",
+        "description": "The combat power range of the hatched Pokemon",
+        "required": ["min", "max"],
+        "properties": {
+          "min": {
+            "type": "integer",
+            "description": "The minimum combat power of the hatched Pokemon"
+          },
+          "max": {
+            "type": "integer",
+            "description": "The maximum combat power of the hatched Pokemon"
+          }
+        },
+        "additionalProperties": false
+      },
+      "isRegional": {
+        "type": "boolean",
+        "description": "Whether or not the hatched Pokemon is a regional exclusive"
+      },
+      "isGiftExchange": {
+        "type": "boolean",
+        "description": "Whether or not the egg is obtained from gift exchange"
+      },
+      "rarity": {
+        "type": "integer",
+        "description": "The rarity tier of the hatched Pokemon (1-5 scale)",
+        "minimum": 1,
+        "maximum": 5
+      },
+      "imageWidth": {
+        "type": "integer",
+        "description": "The width of the image in pixels"
+      },
+      "imageHeight": {
+        "type": "integer",
+        "description": "The height of the image in pixels"
+      },
+      "imageType": {
+        "type": "string",
+        "description": "The image format",
+        "enum": ["png", "jpg", "jpeg", "gif", "webp"]
+      }
+    },
+    "additionalProperties": false
+  }
+}

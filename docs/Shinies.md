@@ -2,6 +2,12 @@
 
 **URL**: `https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/shinies.min.json`  
 
+## JSON Schema
+
+The data structure is formally defined by the [JSON Schema](../schemas/shinies.schema.json).
+
+You can validate data against this schema or use it to generate types for your application.
+
 ## Overview
 
 The Shinies endpoint provides comprehensive data about which Pokémon have shiny variants available in Pokémon GO, including Pokemon names, release dates, regional variants, and form information.
