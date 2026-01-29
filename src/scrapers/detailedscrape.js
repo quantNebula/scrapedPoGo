@@ -68,10 +68,13 @@ function main()
 
     const eventsData = JSON.parse(fs.readFileSync("./data/events.min.json"));
     
-    // Flatten eventType-keyed structure into array
+    // Handle both array format and eventType-keyed object format
     let events = [];
-    if (eventsData && typeof eventsData === 'object') {
-        // New structure: { "event-type": [...], "another-type": [...] }
+    if (Array.isArray(eventsData)) {
+        // Array format: use as-is (primary format from events.js)
+        events = eventsData;
+    } else if (eventsData && typeof eventsData === 'object') {
+        // Legacy object format: { "event-type": [...], "another-type": [...] }
         Object.values(eventsData).forEach(typeArray => {
             if (Array.isArray(typeArray)) {
                 events = events.concat(typeArray);
