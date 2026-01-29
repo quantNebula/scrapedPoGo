@@ -6,6 +6,7 @@
  */
 
 const fs = require('fs');
+const logger = require('../utils/logger');
 const events = require('../pages/events')
 const raids = require('../pages/raids')
 const research = require('../pages/research')
@@ -16,11 +17,11 @@ const rocketLineups = require('../pages/rocketLineups')
  * Main function that orchestrates all primary scrapers.
  * Creates the data directory if it doesn't exist, then initiates
  * parallel scraping of all data sources.
- * 
+ *
  * @function main
  * @returns {void}
  * @throws {Error} Logs error and exits with code 1 on failure
- * 
+ *
  * @example
  * // Run via npm script or directly:
  * // node src/scrapers/scrape.js
@@ -28,6 +29,8 @@ const rocketLineups = require('../pages/rocketLineups')
  */
 function main()
 {
+    logger.start("Starting primary scrapers...");
+
     if (!fs.existsSync('data'))
         fs.mkdirSync('data');
 
@@ -36,6 +39,8 @@ function main()
     research.get();
     eggs.get();
     rocketLineups.get();
+
+    logger.info("Scrapers initiated.");
 }
 
 try
@@ -44,6 +49,6 @@ try
 }
 catch (e)
 {
-    console.error("ERROR: " + e);
+    logger.error(e);
     process.exit(1);
 }

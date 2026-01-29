@@ -11,6 +11,7 @@ const jsd = require('jsdom');
 const { JSDOM } = jsd;
 const https = require('https');
 const { normalizeDatePair } = require('../utils/scraperUtils');
+const logger = require('../utils/logger');
 
 /**
  * @typedef {Object} GameEvent
@@ -65,6 +66,7 @@ function get()
             }
             catch (error)
             {
+                logger.error(error.message);
                 console.error(error.message);
             };
 
@@ -93,6 +95,7 @@ function get()
 
                             if (!(eventID in eventDates))
                             {
+                                logger.warn(`Event '${eventID}' not present in events feed. Date values will be null.`);
                                 console.warn(`WARNING: Event '${eventID}' not present in events feed. Date values will be null.`);
                             }
 
@@ -154,12 +157,14 @@ function get()
 
                     fs.writeFile('data/events.min.json', JSON.stringify(allEvents), err => {
                         if (err) {
+                            logger.error(err);
                             console.error(err);
                             return;
                         }
                     });
                 }).catch(_err =>
                 {
+                    logger.error(_err);
                     console.log(_err);
                     https.get("https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/events.min.json", (res) =>
                     {
@@ -173,6 +178,7 @@ function get()
 
                                 fs.writeFile('data/events.min.json', JSON.stringify(json), err => {
                                     if (err) {
+                                        logger.error(err);
                                         console.error(err);
                                         return;
                                     }
@@ -180,11 +186,13 @@ function get()
                             }
                             catch (error)
                             {
+                                logger.error(error.message);
                                 console.error(error.message);
                             };
                         });
 
                     }).on("error", (error) => {
+                        logger.error(error.message);
                         console.error(error.message);
                     });
                 });
@@ -192,6 +200,11 @@ function get()
         });
 
     }).on("error", (error) => {
+        logger.error(error.message);
+    });
+}
+
+module.exports = { get }
         console.error(error.message);
     });
 }
