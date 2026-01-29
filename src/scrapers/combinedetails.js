@@ -7,6 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const logger = require('../utils/logger');
 
 /**
  * Sanitizes an event type to a safe filename.
@@ -285,7 +286,7 @@ function generateEventTypeFiles(eventsByType) {
         count++;
     });
     
-    console.log(`Generated ${count} eventType files in ${outputDir}`);
+    logger.success(`Generated ${count} eventType files in ${outputDir}`);
 }
 
 /**
@@ -346,7 +347,7 @@ function main()
 
     fs.readdir("data/temp", function (err, files) {
         if (err) {
-            console.log('Unable to scan temp directory, writing events without details: ' + err);
+            logger.warn('Unable to scan temp directory, writing events without details: ' + err);
             // Still segment and write even without temp data
             writeSegmentedOutput(events);
             return;
@@ -366,7 +367,7 @@ function main()
             const filePath = "./data/temp/" + f;
             const fileContent = fs.readFileSync(filePath, 'utf8');
             if (!fileContent || fileContent.trim().length === 0) {
-                console.warn(`Skipping empty temp file: ${f}`);
+                logger.warn(`Skipping empty temp file: ${f}`);
                 return;
             }
             
@@ -374,7 +375,7 @@ function main()
             try {
                 data = JSON.parse(fileContent);
             } catch (parseErr) {
-                console.warn(`Skipping invalid JSON in temp file ${f}: ${parseErr.message}`);
+                logger.warn(`Skipping invalid JSON in temp file ${f}: ${parseErr.message}`);
                 return;
             }
 
@@ -442,10 +443,10 @@ function writeSegmentedOutput(events) {
     // Write main events file as a flat array
     fs.writeFile('data/events.min.json', JSON.stringify(allEvents), err => {
         if (err) {
-            console.error(err);
+            logger.error(err);
             return;
         }
-        console.log('Created data/events.min.json as flat array with ' + allEvents.length + ' events');
+        logger.success('Created data/events.min.json as flat array with ' + allEvents.length + ' events');
     });
 
     // Group by eventType for per-type files (backward compatibility)
@@ -468,6 +469,6 @@ try
 }
 catch (e)
 {
-    console.error("ERROR: " + e);
+    logger.error("ERROR: " + e);
     process.exit(1);
 }

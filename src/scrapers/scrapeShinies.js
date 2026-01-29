@@ -6,6 +6,7 @@
  */
 
 const fs = require('fs');
+const logger = require('../utils/logger');
 const shinies = require('../pages/shinies');
 
 /**
@@ -28,18 +29,18 @@ function main()
     if (!fs.existsSync('data'))
         fs.mkdirSync('data');
 
-    console.log('Scraping shiny Pokemon data from PogoAssets...');
+    logger.start('Scraping shiny Pokemon data from PogoAssets...');
     
     shinies().then(data => {
         fs.writeFile('data/shinies.min.json', JSON.stringify(data), err => {
             if (err) {
-                console.error('Error writing shinies.min.json:', err);
+                logger.error('Error writing shinies.min.json:', err);
                 return;
             }
-            console.log(`Successfully saved ${data.length} shinies to data/shinies.min.json`);
+            logger.success(`Successfully saved ${data.length} shinies to data/shinies.min.json`);
         });
     }).catch(error => {
-        console.error('Failed to scrape shinies:', error);
+        logger.error('Failed to scrape shinies:', error);
         process.exit(1);
     });
 }
@@ -50,6 +51,6 @@ try
 }
 catch (e)
 {
-    console.error("ERROR: " + e);
+    logger.error("ERROR: " + e);
     process.exit(1);
 }

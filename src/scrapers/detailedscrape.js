@@ -7,6 +7,7 @@
 
 const fs = require('fs');
 const https = require('https');
+const logger = require('../utils/logger');
 
 const breakthrough = require('../pages/detailed/breakthrough')
 const spotlight = require('../pages/detailed/spotlight')
@@ -63,6 +64,8 @@ const event = require('../pages/detailed/event')
  */
 function main()
 {
+    logger.start("Starting detailed scrapers...");
+
     if (!fs.existsSync('data/temp'))
         fs.mkdirSync('data/temp');
 
@@ -189,19 +192,19 @@ function main()
                 
                 // Wait for all scrapers to complete
                 Promise.all(promises).then(() => {
-                    console.log(`Completed scraping ${promises.length} detailed event pages`);
+                    logger.success(`Completed scraping ${promises.length} detailed event pages`);
                 }).catch(err => {
-                    console.error('Error during detailed scraping:', err.message);
+                    logger.error('Error during detailed scraping:', err.message);
                 });
             }
             catch (error)
             {
-                console.error(error.message);
+                logger.error(error.message);
             };
         });
     
     }).on("error", (error) => {
-        console.error(error.message);
+        logger.error(error.message);
     });
 }
 
@@ -211,6 +214,6 @@ try
 }
 catch (e)
 {
-    console.error("ERROR: " + e);
+    logger.error("ERROR: " + e);
     process.exit(1);
 }
