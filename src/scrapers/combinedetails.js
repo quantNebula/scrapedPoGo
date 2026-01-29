@@ -352,6 +352,14 @@ function main()
             return;
         }
 
+        // Create a map for O(1) lookup
+        const eventMap = new Map();
+        events.forEach(e => {
+            if (e.eventID) {
+                eventMap.set(e.eventID, e);
+            }
+        });
+
         files.forEach(f =>
         {
             // Skip empty files or non-JSON files
@@ -370,41 +378,39 @@ function main()
                 return;
             }
 
-            events.forEach(e =>
+            if (eventMap.has(data.id))
             {
-                if (e.eventID == data.id)
+                const e = eventMap.get(data.id);
+                // add generic data fields directly to event (available for all possible events)
+                if (data.type == "generic")
                 {
-                    // add generic data fields directly to event (available for all possible events)
-                    if (data.type == "generic")
-                    {
-                        Object.assign(e, data.data);
-                    }
-                    // add event specific data directly to event object
-                    if (data.type == "research-breakthrough" ||
-                        data.type == "pokemon-spotlight-hour" ||
-                        data.type == "community-day" ||
-                        data.type == "raid-battles" ||
-                        data.type == "raid-hour" ||
-                        data.type == "raid-day" ||
-                        data.type == "team-go-rocket" ||
-                        data.type == "go-rocket-takeover" ||
-                        data.type == "go-battle-league" ||
-                        data.type == "season" ||
-                        data.type == "pokemon-go-tour" ||
-                        data.type == "timed-research" ||
-                        data.type == "special-research" ||
-                        data.type == "max-battles" ||
-                        data.type == "max-mondays" ||
-                        data.type == "go-pass" ||
-                        data.type == "pokestop-showcase" ||
-                        data.type == "research" ||
-                        data.type == "event" ||
-                        data.type == "promo-codes")
-                    {
-                        Object.assign(e, data.data);
-                    }
+                    Object.assign(e, data.data);
                 }
-            });
+                // add event specific data directly to event object
+                if (data.type == "research-breakthrough" ||
+                    data.type == "pokemon-spotlight-hour" ||
+                    data.type == "community-day" ||
+                    data.type == "raid-battles" ||
+                    data.type == "raid-hour" ||
+                    data.type == "raid-day" ||
+                    data.type == "team-go-rocket" ||
+                    data.type == "go-rocket-takeover" ||
+                    data.type == "go-battle-league" ||
+                    data.type == "season" ||
+                    data.type == "pokemon-go-tour" ||
+                    data.type == "timed-research" ||
+                    data.type == "special-research" ||
+                    data.type == "max-battles" ||
+                    data.type == "max-mondays" ||
+                    data.type == "go-pass" ||
+                    data.type == "pokestop-showcase" ||
+                    data.type == "research" ||
+                    data.type == "event" ||
+                    data.type == "promo-codes")
+                {
+                    Object.assign(e, data.data);
+                }
+            }
         });
 
         writeSegmentedOutput(events);
