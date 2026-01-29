@@ -6,6 +6,7 @@ A comprehensive web scraper for Pokémon GO event data from [LeekDuck.com](https
 
 - [Quick Start](#quick-start)
 - [API Endpoints](#api-endpoints)
+- [JSON Schemas](#json-schemas)
 - [Project Structure](#project-structure)
 - [Scrapers](#scrapers)
 - [Development](#development)
@@ -93,6 +94,36 @@ Each `eventType` has its own file containing only events of that type (automatic
 - Formatted: `https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/shinies.json`
 - Minimized: `https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/shinies.min.json`
 - [Documentation](docs/Shinies.md)
+
+---
+
+## JSON Schemas
+
+All data files have JSON Schema definitions for validation and type generation. Schemas are available in the [`schemas/`](schemas/) directory.
+
+### Available Schemas
+
+- [eggs.schema.json](schemas/eggs.schema.json) - Egg hatch data
+- [events.schema.json](schemas/events.schema.json) - Events data  
+- [raids.schema.json](schemas/raids.schema.json) - Raid boss data
+- [research.schema.json](schemas/research.schema.json) - Field research data
+- [rocketLineups.schema.json](schemas/rocketLineups.schema.json) - Team GO Rocket lineups
+- [shinies.schema.json](schemas/shinies.schema.json) - Shiny availability data
+
+### Validation
+
+Validate all data files against their schemas:
+
+```bash
+npm run validate
+```
+
+### Usage
+
+See the [schemas README](schemas/README.md) for:
+- How to use schemas for validation in your application
+- Generating TypeScript types from schemas
+- Integration examples
 
 ---
 
