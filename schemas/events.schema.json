@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/ayy-j/scrapedPoGo/main/schemas/events.schema.json",
   "title": "Pokemon GO Events Data",
-  "description": "Schema for Pokemon GO event data from LeekDuck",
+  "description": "Schema for Pokemon GO event data from LeekDuck. Note: additionalProperties is set to true as events can have many type-specific fields added by detailed scrapers.",
   "type": "array",
   "items": {
     "type": "object",

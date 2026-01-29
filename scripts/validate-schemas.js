@@ -33,11 +33,10 @@ for (const { schema, data } of validations) {
   const schemaPath = path.join(__dirname, '..', schema);
   const dataPath = path.join(__dirname, '..', data);
   
-  totalValidations++;
-  
   // Check if files exist
   if (!fs.existsSync(schemaPath)) {
     console.log(`❌ ${data}: Schema file not found (${schema})`);
+    totalValidations++;
     allValid = false;
     continue;
   }
@@ -46,6 +45,8 @@ for (const { schema, data } of validations) {
     console.log(`⚠️  ${data}: Data file not found, skipping validation`);
     continue;
   }
+  
+  totalValidations++;
   
   try {
     // Load schema and data

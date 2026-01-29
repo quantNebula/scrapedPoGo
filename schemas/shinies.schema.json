@@ -19,8 +19,11 @@
       },
       "releasedDate": {
         "type": ["string", "null"],
-        "description": "Date when the shiny was first released (YYYY/MM/DD or YYYY/M/D format)",
-        "pattern": "^\\d{4}/\\d{1,2}/\\d{1,2}$|^$"
+        "description": "Date when the shiny was first released (YYYY/MM/DD or YYYY/M/D format), or null if not yet released",
+        "anyOf": [
+          { "type": "null" },
+          { "type": "string", "pattern": "^\\d{4}/\\d{1,2}/\\d{1,2}$" }
+        ]
       },
       "family": {
         "type": ["string", "null"],
