@@ -108,10 +108,16 @@ function fetchImageBuffer(url, timeout) {
                 // Stop reading once we have enough bytes
                 if (totalBytes >= maxBytes) {
                     response.destroy();
+                    resolve(Buffer.concat(chunks));
                 }
             });
             
             response.on('end', () => {
+                resolve(Buffer.concat(chunks));
+            });
+
+            // Fallback for when destroy() is called and 'end' is not emitted
+            response.on('close', () => {
                 resolve(Buffer.concat(chunks));
             });
             
