@@ -10,6 +10,10 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const http = require('http');
+const dotenv = require('dotenv');
+
+dotenv.config();
+dotenv.config({ path: '.env.local' });
 
 // Configuration
 const DATA_DIR = path.join(__dirname, '../data');

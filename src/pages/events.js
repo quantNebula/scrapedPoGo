@@ -11,6 +11,7 @@ const { JSDOM } = jsd;
 const https = require('https');
 const { normalizeDatePair } = require('../utils/scraperUtils');
 const logger = require('../utils/logger');
+const { transformUrls } = require('../utils/blobUrls');
 
 /**
  * @typedef {Object} GameEvent
@@ -152,7 +153,9 @@ function get()
 
                     allEvents = deduplicatedEvents;
 
-                    fs.writeFile('data/events.min.json', JSON.stringify(allEvents), err => {
+                    const output = transformUrls(allEvents);
+
+                    fs.writeFile('data/events.min.json', JSON.stringify(output), err => {
                         if (err) {
                             logger.error(err);
                             return;
@@ -171,7 +174,9 @@ function get()
                             {
                                 let json = JSON.parse(body);
 
-                                fs.writeFile('data/events.min.json', JSON.stringify(json), err => {
+                                const output = transformUrls(json);
+
+                                fs.writeFile('data/events.min.json', JSON.stringify(output), err => {
                                     if (err) {
                                         logger.error(err);
                                         return;

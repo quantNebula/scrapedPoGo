@@ -8,6 +8,11 @@
 const fs = require('fs');
 const logger = require('../utils/logger');
 const shinies = require('../pages/shinies');
+const { transformUrls } = require('../utils/blobUrls');
+const dotenv = require('dotenv');
+
+dotenv.config();
+dotenv.config({ path: '.env.local' });
 
 /**
  * Main function that runs the shiny Pokemon scraper.
@@ -32,12 +37,13 @@ function main()
     logger.start('Scraping shiny Pokemon data from PogoAssets...');
     
     shinies().then(data => {
-        fs.writeFile('data/shinies.min.json', JSON.stringify(data), err => {
+        const output = transformUrls(data);
+        fs.writeFile('data/shinies.min.json', JSON.stringify(output), err => {
             if (err) {
                 logger.error('Error writing shinies.min.json:', err);
                 return;
             }
-            logger.success(`Successfully saved ${data.length} shinies to data/shinies.min.json`);
+            logger.success(`Successfully saved ${output.length} shinies to data/shinies.min.json`);
         });
     }).catch(error => {
         logger.error('Failed to scrape shinies:', error);

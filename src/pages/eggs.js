@@ -11,6 +11,7 @@ const { JSDOM } = jsd;
 const https = require('https');
 const { loadShinyData, extractDexNumber, hasShiny } = require('../utils/shinyData');
 const { getMultipleImageDimensions } = require('../utils/imageDimensions');
+const { transformUrls } = require('../utils/blobUrls');
 
 /**
  * @typedef {Object} CombatPower
@@ -148,7 +149,9 @@ function get()
                 }
             });
 
-            fs.writeFile('data/eggs.min.json', JSON.stringify(eggs), err => {
+            const output = transformUrls(eggs);
+
+            fs.writeFile('data/eggs.min.json', JSON.stringify(output), err => {
                 if (err) {
                     console.error(err);
                     return;
@@ -167,7 +170,9 @@ function get()
                         {
                             let json = JSON.parse(body);
     
-                            fs.writeFile('data/eggs.min.json', JSON.stringify(json), err => {
+                            const output = transformUrls(json);
+
+                            fs.writeFile('data/eggs.min.json', JSON.stringify(output), err => {
                                 if (err) {
                                     console.error(err);
                                     return;

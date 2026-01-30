@@ -6,12 +6,16 @@
  */
 
 const fs = require('fs');
+const dotenv = require('dotenv');
 const logger = require('../utils/logger');
 const events = require('../pages/events')
 const raids = require('../pages/raids')
 const research = require('../pages/research')
 const eggs = require('../pages/eggs')
 const rocketLineups = require('../pages/rocketLineups')
+
+dotenv.config();
+dotenv.config({ path: '.env.local' });
 
 /**
  * Main function that orchestrates all primary scrapers.

@@ -8,6 +8,11 @@
 const fs = require('fs');
 const path = require('path');
 const logger = require('../utils/logger');
+const { transformUrls } = require('../utils/blobUrls');
+const dotenv = require('dotenv');
+
+dotenv.config();
+dotenv.config({ path: '.env.local' });
 
 /**
  * Sanitizes an event type to a safe filename.
@@ -440,18 +445,20 @@ function writeSegmentedOutput(events) {
         return dateA - dateB;
     });
 
+    const transformedEvents = transformUrls(allEvents);
+
     // Write main events file as a flat array
-    fs.writeFile('data/events.min.json', JSON.stringify(allEvents), err => {
+    fs.writeFile('data/events.min.json', JSON.stringify(transformedEvents), err => {
         if (err) {
             logger.error(err);
             return;
         }
-        logger.success('Created data/events.min.json as flat array with ' + allEvents.length + ' events');
+        logger.success('Created data/events.min.json as flat array with ' + transformedEvents.length + ' events');
     });
 
     // Group by eventType for per-type files (backward compatibility)
     const eventsByType = {};
-    allEvents.forEach(event => {
+    transformedEvents.forEach(event => {
         const type = event.eventType || 'unknown';
         if (!eventsByType[type]) {
             eventsByType[type] = [];

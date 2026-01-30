@@ -11,6 +11,7 @@ const { JSDOM } = jsd;
 const https = require('https');
 const { loadShinyData, extractDexNumber, hasShiny } = require('../utils/shinyData');
 const { getMultipleImageDimensions } = require('../utils/imageDimensions');
+const { transformUrls } = require('../utils/blobUrls');
 
 /**
  * @typedef {Object} RaidCombatPower
@@ -297,13 +298,15 @@ function get() {
                     }
                 });
 
-                fs.writeFile('data/raids.min.json', JSON.stringify(bosses), err => {
+                const output = transformUrls(bosses);
+
+                fs.writeFile('data/raids.min.json', JSON.stringify(output), err => {
                     if (err) {
                         console.error(err);
                         return;
                     }
                 });
-                resolve(bosses);
+                resolve(output);
             }).catch(_err => {
                 console.log(_err);
                 https.get("https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/raids.min.json", (res) => {
@@ -314,7 +317,9 @@ function get() {
                         try {
                             let json = JSON.parse(body);
 
-                            fs.writeFile('data/raids.min.json', JSON.stringify(json), err => {
+                            const output = transformUrls(json);
+
+                            fs.writeFile('data/raids.min.json', JSON.stringify(output), err => {
                                 if (err) {
                                     console.error(err);
                                     return;
