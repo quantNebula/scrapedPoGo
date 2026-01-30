@@ -6,8 +6,8 @@
  */
 
 const fs = require('fs');
-const https = require('https');
 const logger = require('../utils/logger');
+const { fetchJson } = require('../utils/scraperUtils');
 
 const breakthrough = require('../pages/detailed/breakthrough')
 const spotlight = require('../pages/detailed/spotlight')
@@ -54,7 +54,7 @@ const event = require('../pages/detailed/event')
  * - event -> event
  * 
  * @function main
- * @returns {void}
+ * @returns {Promise<void>}
  * @throws {Error} Logs error and exits with code 1 on failure
  * 
  * @example
@@ -62,7 +62,7 @@ const event = require('../pages/detailed/event')
  * // node src/scrapers/detailedscrape.js
  * // Creates data/temp/*.json files for each event
  */
-function main()
+async function main()
 {
     logger.start("Starting detailed scrapers...");
 
@@ -87,133 +87,72 @@ function main()
 
     const promises = [];
 
-    https.get("https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/events.min.json", (res) =>
-    {
-        let body = "";
-        res.on("data", (chunk) => { body += chunk; });
-    
-        res.on("end", () => {
-            try
-            {
-                let bkpData = JSON.parse(body);
-                
-                // Flatten backup data if it's in new structure
-                let bkp = [];
-                if (bkpData && typeof bkpData === 'object') {
-                    if (Array.isArray(bkpData)) {
-                        // Old structure: already an array
-                        bkp = bkpData;
-                    } else {
-                        // New structure: { "event-type": [...], "another-type": [...] }
-                        Object.values(bkpData).forEach(typeArray => {
-                            if (Array.isArray(typeArray)) {
-                                bkp = bkp.concat(typeArray);
-                            }
-                        });
-                    }
-                }
+    // Map event types to their scrapers
+    const SCRAPER_MAP = {
+        "research-breakthrough": breakthrough,
+        "pokemon-spotlight-hour": spotlight,
+        "community-day": communityday,
+        "raid-battles": raidbattles,
+        "raid-hour": raidhour,
+        "raid-day": raidday,
+        "team-go-rocket": teamgorocket,
+        "go-rocket-takeover": teamgorocket,
+        "go-battle-league": gobattleleague,
+        "season": season,
+        "pokemon-go-tour": gotour,
+        "timed-research": timedresearch,
+        "special-research": timedresearch,
+        "max-battles": maxbattles,
+        "max-mondays": maxmondays,
+        "go-pass": gopass,
+        "pokestop-showcase": pokestopshowcase,
+        "research": research,
+        "event": event
+    };
 
-                events.forEach(e => {
-                    // Construct the event link from eventID
-                    const link = `https://www.leekduck.com/events/${e.eventID}/`;
-                    
-                    // get generic extra data independend from event type
-                    promises.push(generic.get(link, e.eventID, bkp));
-                    // get event type specific extra data
-                    if (e.eventType == "research-breakthrough")
-                    {
-                        promises.push(breakthrough.get(link, e.eventID, bkp));
+    try {
+        const bkpData = await fetchJson("https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/events.min.json");
+
+        // Flatten backup data if it's in new structure
+        let bkp = [];
+        if (bkpData && typeof bkpData === 'object') {
+            if (Array.isArray(bkpData)) {
+                // Old structure: already an array
+                bkp = bkpData;
+            } else {
+                // New structure: { "event-type": [...], "another-type": [...] }
+                Object.values(bkpData).forEach(typeArray => {
+                    if (Array.isArray(typeArray)) {
+                        bkp = bkp.concat(typeArray);
                     }
-                    else if (e.eventType == "pokemon-spotlight-hour")
-                    {
-                        promises.push(spotlight.get(link, e.eventID, bkp));
-                    }
-                    else if (e.eventType == "community-day")
-                    {
-                        promises.push(communityday.get(link, e.eventID, bkp));
-                    }
-                    else if (e.eventType == "raid-battles")
-                    {
-                        promises.push(raidbattles.get(link, e.eventID, bkp));
-                    }
-                    else if (e.eventType == "raid-hour")
-                    {
-                        promises.push(raidhour.get(link, e.eventID, bkp));
-                    }
-                    else if (e.eventType == "raid-day")
-                    {
-                        promises.push(raidday.get(link, e.eventID, bkp));
-                    }
-                    else if (e.eventType == "team-go-rocket" || e.eventType == "go-rocket-takeover")
-                    {
-                        promises.push(teamgorocket.get(link, e.eventID, bkp));
-                    }
-                    else if (e.eventType == "go-battle-league")
-                    {
-                        promises.push(gobattleleague.get(link, e.eventID, bkp));
-                    }
-                    else if (e.eventType == "season")
-                    {
-                        promises.push(season.get(link, e.eventID, bkp));
-                    }
-                    else if (e.eventType == "pokemon-go-tour")
-                    {
-                        promises.push(gotour.get(link, e.eventID, bkp));
-                    }
-                    else if (e.eventType == "timed-research" || e.eventType == "special-research")
-                    {
-                        promises.push(timedresearch.get(link, e.eventID, bkp));
-                    }
-                    else if (e.eventType == "max-battles")
-                    {
-                        promises.push(maxbattles.get(link, e.eventID, bkp));
-                    }
-                    else if (e.eventType == "max-mondays")
-                    {
-                        promises.push(maxmondays.get(link, e.eventID, bkp));
-                    }
-                    else if (e.eventType == "go-pass")
-                    {
-                        promises.push(gopass.get(link, e.eventID, bkp));
-                    }
-                    else if (e.eventType == "pokestop-showcase")
-                    {
-                        promises.push(pokestopshowcase.get(link, e.eventID, bkp));
-                    }
-                    else if (e.eventType == "research")
-                    {
-                        promises.push(research.get(link, e.eventID, bkp));
-                    }
-                    else if (e.eventType == "event")
-                    {
-                        promises.push(event.get(link, e.eventID, bkp));
-                    }
-                });
-                
-                // Wait for all scrapers to complete
-                Promise.all(promises).then(() => {
-                    logger.success(`Completed scraping ${promises.length} detailed event pages`);
-                }).catch(err => {
-                    logger.error('Error during detailed scraping:', err.message);
                 });
             }
-            catch (error)
-            {
-                logger.error(error.message);
-            };
+        }
+
+        events.forEach(e => {
+            // Construct the event link from eventID
+            const link = `https://www.leekduck.com/events/${e.eventID}/`;
+
+            // get generic extra data independend from event type
+            promises.push(generic.get(link, e.eventID, bkp));
+
+            // get event type specific extra data
+            const scraper = SCRAPER_MAP[e.eventType];
+            if (scraper) {
+                promises.push(scraper.get(link, e.eventID, bkp));
+            }
         });
-    
-    }).on("error", (error) => {
-        logger.error(error.message);
-    });
+
+        // Wait for all scrapers to complete
+        await Promise.all(promises);
+        logger.success(`Completed scraping ${promises.length} detailed event pages`);
+
+    } catch (error) {
+        logger.error(`Error in detailed scraping: ${error.message}`);
+    }
 }
 
-try
-{
-    main();
-}
-catch (e)
-{
+main().catch(e => {
     logger.error("ERROR: " + e);
     process.exit(1);
-}
+});
