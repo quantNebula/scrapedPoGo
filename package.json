@@ -15,7 +15,8 @@
     "blob:upload:dry": "node scripts/upload-images-to-blob.js --dry-run",
     "blob:upload:force": "node scripts/upload-images-to-blob.js --force",
     "blob:transform": "node scripts/transform-urls-to-blob.js",
-    "blob:transform:dry": "node scripts/transform-urls-to-blob.js --dry-run"
+    "blob:transform:dry": "node scripts/transform-urls-to-blob.js --dry-run",
+    "ai:enrich-events": "node scripts/enrich-events-ai.js"
   },
   "author": "quantNebula",
   "license": "MIT",
