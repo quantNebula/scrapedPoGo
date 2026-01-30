@@ -357,21 +357,21 @@ module.exports = { get };
 | `npm run scrapeshinies` | Run shiny Pokemon scraper |
 | `npm run detailedscrape` | Scrape detailed event information |
 | `npm run combinedetails` | Combine detailed data with basic events and generate per-eventType files |
-| `npm run blob:upload` | Upload images to Netlify Blob Storage |
+| `npm run blob:upload` | Upload images to Vercel Blob Storage |
 | `npm run blob:upload:dry` | Preview uploads without actually uploading |
 | `npm run blob:upload:force` | Re-upload all images (overwrite existing) |
 
 ---
 
-## Netlify Blob Storage
+## Vercel Blob Storage
 
-Images referenced in the scraped data can optionally be stored in [Netlify Blob Storage](https://docs.netlify.com/blobs/overview/) for self-hosted image delivery.
+Images referenced in the scraped data can optionally be stored in [Vercel Blob](https://vercel.com/docs/storage/vercel-blob) for self-hosted image delivery.
 
 ### Setup
 
-1. Create a Blob store in your Netlify project
-2. Configure environment variables for Netlify Blob
-3. Add `NETLIFY_BLOB_TOKEN` to GitHub Actions secrets
+1. Create a Blob store in your Vercel project
+2. Configure environment variables for Vercel Blob
+3. Add `BLOB_READ_WRITE_TOKEN` to GitHub Actions secrets
 
 ### Upload Images
 
@@ -388,7 +388,7 @@ npm run blob:upload:force
 
 ### Enable Blob URLs in Output
 
-Set the `USE_BLOB_URLS=true` environment variable to transform image URLs in JSON output to use Netlify Blob storage URLs instead of external CDNs.
+Set the `USE_BLOB_URLS=true` environment variable to transform image URLs in JSON output to use Vercel Blob storage URLs instead of external CDNs.
 
 The URL mapping is stored in `data/blob-url-map.json` and automatically updated during uploads.
 

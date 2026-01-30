@@ -66,7 +66,7 @@ All events share these required core fields:
 | **`name`** | `string` | Display name of the event |
 | **`eventType`** | `string` | Type of the event (see [Event Types](#event-types) below) |
 | **`heading`** | `string` | Display heading/category for the event |
-| **`image`** | `string` | Event header/banner image URL (served from Netlify Blob or external CDN) |
+| **`image`** | `string` | Event header/banner image URL (served from Vercel Blob or external CDN) |
 | **`start`** | `string` | Event start date/time in ISO 8601 format (see [Date Format](#date-format)) |
 | **`end`** | `string` | Event end date/time in ISO 8601 format (see [Date Format](#date-format)) |
 
