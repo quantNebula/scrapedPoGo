@@ -150,10 +150,46 @@ async function scrapeShinies() {
 				}
 				
 				let filename = `pokemon_icon_${String(dexNumber).padStart(3, '0')}_${typeFileCode}_shiny.png`;
+				let basePath = 'Images/Pokemon%20-%20256x256';
 				
-				// If there's a custom filename, use it
-				if (pokemon.fn) {
-					filename = `${pokemon.fn}_shiny.png`;
+				// Prefer aa_fn (Addressable Assets format) over fn for custom filenames
+				if (pokemon.aa_fn) {
+					// aa_fn format: "pm2.cJAN_2020_NOEVOLVE" -> add ".s.icon.png" for shiny
+					filename = `${pokemon.aa_fn}.s.icon.png`;
+					basePath = 'Images/Pokemon%20-%20256x256/Addressable%20Assets';
+				} else if (pokemon.fn) {
+					// Legacy fn format - try to convert to aa_fn format
+					// fn format: "pm0025_00_pgo_fall2019" -> "pm25.fFALL_2019.s.icon.png"
+					// Mapping table for fn suffixes to PokeMiners asset names
+					const fnMapping = {
+						'fall2019': 'fFALL_2019',
+						'movie2020': 'fCOSTUME_2020',
+						'4thanniversary': 'fFLYING_5TH_ANNIV',  // Close approximation
+						'5thanniversary': 'fFLYING_5TH_ANNIV',
+						'winter2020': 'cWINTER_2018',          // May need verification
+						'copy2019': 'fCOPY_2019',
+						'adventurehat2020': 'fADVENTURE_HAT_2020'
+					};
+					
+					const fnMatch = pokemon.fn.match(/^pm(\d+)_\d+_pgo_(.+)$/);
+					if (fnMatch) {
+						const fnDex = parseInt(fnMatch[1], 10);
+						const costumeSuffix = fnMatch[2].toLowerCase();
+						const mappedName = fnMapping[costumeSuffix];
+						
+						if (mappedName) {
+							filename = `pm${fnDex}.${mappedName}.s.icon.png`;
+							basePath = 'Images/Pokemon%20-%20256x256/Addressable%20Assets';
+						} else {
+							// Try generic conversion: fall2019 -> FALL_2019, use 'f' prefix for forms
+							const upperSuffix = costumeSuffix.toUpperCase().replace(/(\d{4})$/, '_$1');
+							filename = `pm${fnDex}.f${upperSuffix}.s.icon.png`;
+							basePath = 'Images/Pokemon%20-%20256x256/Addressable%20Assets';
+						}
+					} else {
+						// Fallback to old format if can't parse
+						filename = `${pokemon.fn}_shiny.png`;
+					}
 				}
 				
 				// Build full name with regional prefix
@@ -171,7 +207,7 @@ async function scrapeShinies() {
 					fullName += isotope;
 				}
 
-				const imageUrl = `https://cdn.jsdelivr.net/gh/PokeMiners/pogo_assets/Images/Pokemon%20-%20256x256/${filename}`;
+				const imageUrl = `https://cdn.jsdelivr.net/gh/PokeMiners/pogo_assets/${basePath}/${filename}`;
 
 				entries.push({
 					dexNumber,
