@@ -173,6 +173,7 @@ async function loadDataset(datasetId) {
 
 function renderTabs() {
   elements.tabs.innerHTML = "";
+  const fragment = document.createDocumentFragment();
   datasetConfig.forEach((dataset) => {
     const button = document.createElement("button");
     button.className = `tab ${state.active === dataset.id ? "active" : ""}`;
@@ -184,8 +185,9 @@ function renderTabs() {
       ensureDatasetLoaded(dataset.id);
       render();
     });
-    elements.tabs.appendChild(button);
+    fragment.appendChild(button);
   });
+  elements.tabs.appendChild(fragment);
 }
 
 function renderStatus() {
@@ -208,12 +210,14 @@ function renderStatus() {
   }
 
   elements.status.innerHTML = "";
+  const fragment = document.createDocumentFragment();
   stats.forEach((stat) => {
     const badge = document.createElement("div");
     badge.className = "badge";
     badge.innerHTML = `<strong>${stat.value}</strong> ${stat.label}`;
-    elements.status.appendChild(badge);
+    fragment.appendChild(badge);
   });
+  elements.status.appendChild(fragment);
 }
 
 function renderFilters() {
@@ -224,6 +228,7 @@ function renderFilters() {
     new Set(items.map((event) => event.eventType).filter(Boolean))
   ).sort();
 
+  const fragment = document.createDocumentFragment();
   types.forEach((type) => {
     const chip = document.createElement("button");
     chip.type = "button";
@@ -237,8 +242,9 @@ function renderFilters() {
       }
       render();
     });
-    elements.filters.appendChild(chip);
+    fragment.appendChild(chip);
   });
+  elements.filters.appendChild(fragment);
 }
 
 function filterRecords(records, dataset) {
@@ -308,20 +314,22 @@ function renderCalendar() {
   const grid = elements.calendarGrid;
   grid.innerHTML = "";
 
+  const fragment = document.createDocumentFragment();
+
   // Day headers
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   days.forEach((d) => {
     const el = document.createElement("div");
     el.className = "calendar-day-header";
     el.textContent = d;
-    grid.appendChild(el);
+    fragment.appendChild(el);
   });
 
   // Empty cells for previous month
   for (let i = 0; i < startDayOfWeek; i++) {
     const el = document.createElement("div");
     el.className = "calendar-day other-month";
-    grid.appendChild(el);
+    fragment.appendChild(el);
   }
 
   // Days
@@ -373,8 +381,9 @@ function renderCalendar() {
         el.appendChild(eventEl);
     });
 
-    grid.appendChild(el);
+    fragment.appendChild(el);
   }
+  grid.appendChild(fragment);
 }
 
 function renderGrid() {
@@ -398,6 +407,9 @@ function renderGrid() {
     elements.grid.innerHTML = `<div class="empty">No results found.</div>`;
     return;
   }
+
+  // ⚡ Bolt Optimization: Use DocumentFragment for batched DOM updates
+  const fragment = document.createDocumentFragment();
 
   filtered.forEach((record) => {
     const card = document.createElement("article");
@@ -447,8 +459,9 @@ function renderGrid() {
       }
     });
 
-    elements.grid.appendChild(card);
+    fragment.appendChild(card);
   });
+  elements.grid.appendChild(fragment);
 }
 
 function renderDetails(record) {
@@ -456,12 +469,14 @@ function renderDetails(record) {
   elements.detailBody.innerHTML = "";
 
   const entries = Object.entries(record || {}).sort(([a], [b]) => a.localeCompare(b));
+  const fragment = document.createDocumentFragment();
   entries.forEach(([key, value]) => {
     const row = document.createElement("div");
     row.className = "detail__row";
     row.innerHTML = `<span>${key}</span><div>${formatValue(value)}</div>`;
-    elements.detailBody.appendChild(row);
+    fragment.appendChild(row);
   });
+  elements.detailBody.appendChild(fragment);
 }
 
 function ensureDatasetLoaded(datasetId) {
