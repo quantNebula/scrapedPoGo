@@ -133,7 +133,7 @@ async function main()
             // Construct the event link from eventID
             const link = `https://www.leekduck.com/events/${e.eventID}/`;
 
-            // get generic extra data independend from event type
+            // get generic extra data independent from event type
             promises.push(generic.get(link, e.eventID, bkp));
 
             // get event type specific extra data
@@ -149,6 +149,7 @@ async function main()
 
     } catch (error) {
         logger.error(`Error in detailed scraping: ${error.message}`);
+        throw error; // Rethrow to trigger process.exit(1) in main().catch()
     }
 }
 

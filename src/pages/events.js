@@ -6,6 +6,7 @@
  */
 
 const fs = require('fs');
+const fsPromises = require('fs').promises;
 const { normalizeDatePair, fetchJson, getJSDOM } = require('../utils/scraperUtils');
 const logger = require('../utils/logger');
 const { transformUrls } = require('../utils/blobUrls');
@@ -37,7 +38,7 @@ const { transformUrls } = require('../utils/blobUrls');
  * // Scrape events data
  * const events = require('./pages/events');
  * await events.get();
- * // Creates data/events.json and data/events.min.json
+ * // Creates data/events.min.json (with CDN-backed fallback on failure)
  */
 async function get()
 {
@@ -145,12 +146,12 @@ async function get()
 
         const output = transformUrls(allEvents);
 
-        fs.writeFile('data/events.min.json', JSON.stringify(output), err => {
-            if (err) {
-                logger.error(err);
-                return;
-            }
-        });
+        try {
+            await fsPromises.writeFile('data/events.min.json', JSON.stringify(output));
+        } catch (writeErr) {
+            logger.error(`Error writing events data to file: ${writeErr.message}`);
+            throw writeErr;
+        }
 
     } catch (_err) {
         logger.error(`Error scraping events page: ${_err.message}`);
@@ -160,12 +161,12 @@ async function get()
             const json = await fetchJson("https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/events.min.json");
             const output = transformUrls(json);
 
-            fs.writeFile('data/events.min.json', JSON.stringify(output), err => {
-                if (err) {
-                    logger.error(err);
-                    return;
-                }
-            });
+            try {
+                await fsPromises.writeFile('data/events.min.json', JSON.stringify(output));
+            } catch (writeErr) {
+                logger.error(`Error writing backup events data to file: ${writeErr.message}`);
+                throw writeErr;
+            }
         } catch (error) {
             logger.error(`Backup fetch failed: ${error.message}`);
         }
