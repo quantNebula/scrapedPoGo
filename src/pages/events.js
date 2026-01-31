@@ -6,10 +6,7 @@
  */
 
 const fs = require('fs');
-const jsd = require('jsdom');
-const { JSDOM } = jsd;
-const https = require('https');
-const { normalizeDatePair, deduplicateEvents } = require('../utils/scraperUtils');
+const { normalizeDatePair, deduplicateEvents, fetchJson, getJSDOM } = require('../utils/scraperUtils');
 const logger = require('../utils/logger');
 const { transformUrls } = require('../utils/blobUrls');
 
@@ -42,132 +39,100 @@ const { transformUrls } = require('../utils/blobUrls');
  * events.get();
  * // Creates data/events.json and data/events.min.json
  */
-function get()
+async function get()
 {
-    https.get("https://leekduck.com/feeds/events.json", (res) =>
-    {
-        var body = "";
-        var eventDates = [];
-        res.on("data", (chunk) => { body += chunk; });
+    try {
+        // Fetch event dates from JSON feed
+        const feedJson = await fetchJson("https://leekduck.com/feeds/events.json");
+        
+        const eventDates = [];
+        for (var i = 0; i < feedJson.length; i++)
+        {
+            var id = feedJson[i].eventID;
+            var start = feedJson[i].start;
+            var end = feedJson[i].end;
 
-        res.on("end", () => {
-            try
-            {
-                var feedJson = JSON.parse(body);
+            eventDates[id] = { "start": start, "end": end };
+        }
 
-                for (var i = 0; i < feedJson.length; i++)
+        try {
+            // Scrape events page using secure JSDOM
+            const dom = await getJSDOM("https://leekduck.com/events/");
+            
+            var allEvents = [];
+
+            ["current","upcoming"].forEach(category => {
+
+                var events = dom.window.document.querySelectorAll(`div.events-list.${category}-events a.event-item-link`);
+
+                events.forEach (e =>
                 {
-                    var id = feedJson[i].eventID;
-                    var start = feedJson[i].start;
-                    var end = feedJson[i].end;
-
-                    eventDates[id] = { "start": start, "end": end };
-                }
-            }
-            catch (error)
-            {
-                logger.error(error.message);
-            };
-
-            return new Promise(resolve => {
-                JSDOM.fromURL("https://leekduck.com/events/", {
-                })
-                .then((dom) => {
-
-                    var allEvents = [];
-
-                    ["current","upcoming"].forEach(category => {
-
-                        var events = dom.window.document.querySelectorAll(`div.events-list.${category}-events a.event-item-link`);
-
-                        events.forEach (e =>
-                        {
-                            var name = e.querySelector(":scope > .event-item-wrapper > .event-item > .event-text-container > .event-text > h2").innerHTML;
-                            var image = e.querySelector(":scope > .event-item-wrapper > .event-item > .event-img-wrapper > img").src;
-                            if (image.includes("cdn-cgi"))
-                            {
-                                image = "https://cdn.leekduck.com/assets/" + image.split("/assets/")[1];
-                            }
-                            var link = e.href;
-                            var eventID = link.split("/events/")[1];
-                            eventID = eventID.substring(0, eventID.length - 1);
-
-                            if (!(eventID in eventDates))
-                            {
-                                logger.warn(`Event '${eventID}' not present in events feed. Date values will be null.`);
-                            }
-
-                            var eventItemWrapper = e.querySelector(":scope > .event-item-wrapper");
-                            var eventType = (eventItemWrapper.classList + "").replace("event-item-wrapper ", "").replace(" skeleton-loading", "");
-                            eventType = eventType.replace("é", "e");
-
-                            // Generate heading from event type
-                            var heading = eventType
-                                .split('-')
-                                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                                .join(' ');
-
-                            var start = eventDates[eventID]?.start || null;
-                            var end = eventDates[eventID]?.end || null;
-
-                            // Normalize dates: convert timezone offsets to UTC, preserve local times
-                            const normalized = normalizeDatePair(start, end);
-                            start = normalized.start;
-                            end = normalized.end;
-
-                            allEvents.push({ "eventID": eventID, "name": name, "eventType": eventType, "heading": heading, "image": image, "start": start, "end": end });
-                        });
-                    });
-
-                    // Optimization: Deduplicate events using a Map to reduce iterations and lookups
-                    allEvents = deduplicateEvents(allEvents);
-
-                    const output = transformUrls(allEvents);
-
-                    fs.writeFile('data/events.min.json', JSON.stringify(output), err => {
-                        if (err) {
-                            logger.error(err);
-                            return;
-                        }
-                    });
-                }).catch(_err =>
-                {
-                    logger.error(_err);
-                    https.get("https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/events.min.json", (res) =>
+                    var name = e.querySelector(":scope > .event-item-wrapper > .event-item > .event-text-container > .event-text > h2").innerHTML;
+                    var image = e.querySelector(":scope > .event-item-wrapper > .event-item > .event-img-wrapper > img").src;
+                    if (image.includes("cdn-cgi"))
                     {
-                        let body = "";
-                        res.on("data", (chunk) => { body += chunk; });
+                        image = "https://cdn.leekduck.com/assets/" + image.split("/assets/")[1];
+                    }
+                    var link = e.href;
+                    var eventID = link.split("/events/")[1];
+                    eventID = eventID.substring(0, eventID.length - 1);
 
-                        res.on("end", () => {
-                            try
-                            {
-                                let json = JSON.parse(body);
+                    if (!(eventID in eventDates))
+                    {
+                        logger.warn(`Event '${eventID}' not present in events feed. Date values will be null.`);
+                    }
 
-                                const output = transformUrls(json);
+                    var eventItemWrapper = e.querySelector(":scope > .event-item-wrapper");
+                    var eventType = (eventItemWrapper.classList + "").replace("event-item-wrapper ", "").replace(" skeleton-loading", "");
+                    eventType = eventType.replace("é", "e");
 
-                                fs.writeFile('data/events.min.json', JSON.stringify(output), err => {
-                                    if (err) {
-                                        logger.error(err);
-                                        return;
-                                    }
-                                });
-                            }
-                            catch (error)
-                            {
-                                logger.error(error.message);
-                            };
-                        });
+                    // Generate heading from event type
+                    var heading = eventType
+                        .split('-')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
 
-                    }).on("error", (error) => {
-                        logger.error(error.message);
-                    });
+                    var start = eventDates[eventID]?.start || null;
+                    var end = eventDates[eventID]?.end || null;
+
+                    // Normalize dates: convert timezone offsets to UTC, preserve local times
+                    const normalized = normalizeDatePair(start, end);
+                    start = normalized.start;
+                    end = normalized.end;
+
+                    allEvents.push({ "eventID": eventID, "name": name, "eventType": eventType, "heading": heading, "image": image, "start": start, "end": end });
                 });
-            })
-        });
+            });
 
-    }).on("error", (error) => {
+            // Optimization: Deduplicate events using a Map to reduce iterations and lookups
+            allEvents = deduplicateEvents(allEvents);
+
+            const output = transformUrls(allEvents);
+
+            fs.writeFile('data/events.min.json', JSON.stringify(output), err => {
+                if (err) {
+                    logger.error(err);
+                    return;
+                }
+            });
+        } catch (_err) {
+            logger.error(_err);
+            
+            // Fallback to cached CDN data
+            const json = await fetchJson("https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/events.min.json");
+
+            const output = transformUrls(json);
+
+            fs.writeFile('data/events.min.json', JSON.stringify(output), err => {
+                if (err) {
+                    logger.error(err);
+                    return;
+                }
+            });
+        }
+    } catch (error) {
         logger.error(error.message);
-    });
+    }
 }
 
 module.exports = { get }

@@ -6,7 +6,7 @@
  */
 
 const fs = require('fs');
-const https = require('https');
+const { fetchJson } = require('../utils/scraperUtils');
 const logger = require('../utils/logger');
 
 const breakthrough = require('../pages/detailed/breakthrough')
@@ -62,7 +62,7 @@ const event = require('../pages/detailed/event')
  * // node src/scrapers/detailedscrape.js
  * // Creates data/temp/*.json files for each event
  */
-function main()
+async function main()
 {
     logger.start("Starting detailed scrapers...");
 
@@ -85,39 +85,32 @@ function main()
         });
     }
 
-    https.get("https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/events.min.json", (res) =>
-    {
-        let body = "";
-        res.on("data", (chunk) => { body += chunk; });
-    
-        res.on("end", async () => {
-            try
-            {
-                let bkpData = JSON.parse(body);
-                
-                // Flatten backup data if it's in new structure
-                let bkp = [];
-                if (bkpData && typeof bkpData === 'object') {
-                    if (Array.isArray(bkpData)) {
-                        // Old structure: already an array
-                        bkp = bkpData;
-                    } else {
-                        // New structure: { "event-type": [...], "another-type": [...] }
-                        Object.values(bkpData).forEach(typeArray => {
-                            if (Array.isArray(typeArray)) {
-                                bkp = bkp.concat(typeArray);
-                            }
-                        });
+    try {
+        const bkpData = await fetchJson("https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/events.min.json");
+        
+        // Flatten backup data if it's in new structure
+        let bkp = [];
+        if (bkpData && typeof bkpData === 'object') {
+            if (Array.isArray(bkpData)) {
+                // Old structure: already an array
+                bkp = bkpData;
+            } else {
+                // New structure: { "event-type": [...], "another-type": [...] }
+                Object.values(bkpData).forEach(typeArray => {
+                    if (Array.isArray(typeArray)) {
+                        bkp = bkp.concat(typeArray);
                     }
-                }
+                });
+            }
+        }
 
-                // Helper to process a single event
-                async function processEvent(e, bkp) {
-                    // Construct the event link from eventID
-                    const link = `https://www.leekduck.com/events/${e.eventID}/`;
-                    const p = [];
-                    
-                    // get generic extra data independend from event type
+        // Helper to process a single event
+        async function processEvent(e, bkp) {
+            // Construct the event link from eventID
+            const link = `https://www.leekduck.com/events/${e.eventID}/`;
+            const p = [];
+            
+            // get generic extra data independend from event type
                     p.push(generic.get(link, e.eventID, bkp));
 
                     // get event type specific extra data
@@ -212,19 +205,12 @@ function main()
                     return Promise.all(promises);
                 }
 
-                // Run with concurrency limit of 5
-                await runWithConcurrency(events, 5, (e) => processEvent(e, bkp));
-                logger.success(`Completed scraping detailed event pages`);
-            }
-            catch (error)
-            {
-                logger.error(error.message);
-            };
-        });
-    
-    }).on("error", (error) => {
+        // Run with concurrency limit of 5
+        await runWithConcurrency(events, 5, (e) => processEvent(e, bkp));
+        logger.success(`Completed scraping detailed event pages`);
+    } catch (error) {
         logger.error(error.message);
-    });
+    }
 }
 
 try

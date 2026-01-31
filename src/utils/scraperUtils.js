@@ -7,6 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { JSDOM } = require('jsdom');
 const { getMultipleImageDimensions, clearCache } = require('./imageDimensions');
 
 /**
@@ -32,6 +33,57 @@ const { getMultipleImageDimensions, clearCache } = require('./imageDimensions');
  * @property {Pokemon[]} pokemon - Extracted Pokemon data
  * @property {Object[]} tables - Extracted table data
  */
+
+// ============================================================================
+// Network Utilities
+// ============================================================================
+
+/**
+ * Fetches content from a URL with a timeout and user-agent.
+ * @param {string} url - URL to fetch
+ * @param {number} [timeout=30000] - Timeout in milliseconds
+ * @returns {Promise<string>} Response text
+ */
+async function fetchUrl(url, timeout = 30000) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    try {
+        const response = await fetch(url, {
+            signal: controller.signal,
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (compatible; ScrapedPoGo/1.0; +https://github.com/quantNebula/scrapedPoGo)'
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+        }
+        return await response.text();
+    } finally {
+        clearTimeout(id);
+    }
+}
+
+/**
+ * Fetches JSON content from a URL.
+ * @param {string} url - URL to fetch
+ * @param {number} [timeout=30000] - Timeout in milliseconds
+ * @returns {Promise<Object>} Parsed JSON object
+ */
+async function fetchJson(url, timeout = 30000) {
+    const text = await fetchUrl(url, timeout);
+    return JSON.parse(text);
+}
+
+/**
+ * Fetches a URL and returns a JSDOM instance.
+ * Replaces JSDOM.fromURL with a secure, timeout-enabled version.
+ * @param {string} url - URL to fetch
+ * @returns {Promise<JSDOM>} JSDOM instance
+ */
+async function getJSDOM(url) {
+    const html = await fetchUrl(url);
+    return new JSDOM(html, { url });
+}
 
 // ============================================================================
 // File Operations
@@ -1226,6 +1278,11 @@ function deduplicateEvents(events) {
 // ============================================================================
 
 module.exports = {
+    // Network utilities
+    fetchUrl,
+    fetchJson,
+    getJSDOM,
+    
     // File operations
     writeTempFile,
     sanitizeFilename,
