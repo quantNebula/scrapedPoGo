@@ -6,6 +6,7 @@ A comprehensive web scraper for Pokémon GO event data from [LeekDuck.com](https
 
 - [Quick Start](#quick-start)
 - [API Endpoints](#api-endpoints)
+- [Data Quality Metrics](#data-quality-metrics)
 - [JSON Schemas](#json-schemas)
 - [Project Structure](#project-structure)
 - [Scrapers](#scrapers)
@@ -37,8 +38,8 @@ npm run detailedscrape
 # Combine detailed data with basic events (also generates per-eventType files)
 npm run combinedetails
 
-# Calculate total size of images referenced in data (if stored locally)
-npm run imagesize
+# Generate data quality metrics
+npm run metrics:generate
 ```
 
 ### Complete Workflow
@@ -99,6 +100,42 @@ Each `eventType` has its own file containing only events of that type (automatic
 - Formatted: `https://pokemn.quest/data/shinies.json`
 - Minimized: `https://pokemn.quest/data/shinies.min.json`
 - [Documentation](docs/Shinies.md)
+
+---
+
+## Data Quality Metrics
+
+Monitor the health and completeness of scraped data with the built-in metrics dashboard.
+
+### Metrics Dashboard
+
+Access the live dashboard at: **https://pokemn.quest/web/metrics.html**
+
+The dashboard provides:
+- **System Overview**: Overall health status, total records, average completeness
+- **Dataset Health Cards**: Individual status for each dataset with completeness bars
+- **Issue Detection**: Automatic identification of missing fields, invalid data, and other problems
+- **Auto-Refresh**: Updates every 5 minutes to show current data quality
+
+### Metrics API
+
+Metrics are available as JSON endpoints:
+- Formatted: `https://pokemn.quest/data/metrics.json`
+- Minimized: `https://pokemn.quest/data/metrics.min.json`
+
+### Generate Metrics Locally
+
+```bash
+npm run metrics:generate
+```
+
+This analyzes all data files and generates:
+- Completeness percentages for each dataset
+- Issue detection (missing required fields, invalid dates, empty arrays)
+- Health status classification (healthy/degraded/critical)
+- Last updated timestamps
+
+The metrics are automatically generated during the CI/CD pipeline after each scraping run.
 
 ---
 
@@ -357,6 +394,8 @@ module.exports = { get };
 | `npm run scrapeshinies` | Run shiny Pokemon scraper |
 | `npm run detailedscrape` | Scrape detailed event information |
 | `npm run combinedetails` | Combine detailed data with basic events and generate per-eventType files |
+| `npm run metrics:generate` | Generate data quality metrics dashboard |
+| `npm run validate` | Validate all data files against JSON schemas |
 | `npm run blob:upload` | Upload images to Vercel Blob Storage |
 | `npm run blob:upload:dry` | Preview uploads without actually uploading |
 | `npm run blob:upload:force` | Re-upload all images (overwrite existing) |
