@@ -45,7 +45,7 @@ const event = require('../pages/detailed/event')
  * - go-battle-league -> gobattleleague
  * - season -> season
  * - pokemon-go-tour -> gotour
- * - timed-research, special-research -> timedresearch
+ * - timed-research, special-research, research-day -> timedresearch
  * - max-battles -> maxbattles
  * - max-mondays -> maxmondays
  * - go-pass -> gopass
@@ -160,7 +160,7 @@ function main()
                     {
                         promises.push(gotour.get(link, e.eventID, bkp));
                     }
-                    else if (e.eventType == "timed-research" || e.eventType == "special-research")
+                    else if (e.eventType == "timed-research" || e.eventType == "special-research" || e.eventType == "research-day")
                     {
                         promises.push(timedresearch.get(link, e.eventID, bkp));
                     }

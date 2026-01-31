@@ -25,7 +25,7 @@ You can validate data against this schema or use it to generate types for your a
     "types": [
         {
             "name": "poison",
-            "image": "https://leekduck.com/assets/img/types/poison.png"
+            "image": "https://pokemn.quest/images/types/poison.png"
         }
     ],
     "combatPower": {
@@ -41,10 +41,10 @@ You can validate data against this schema or use it to generate types for your a
     "boostedWeather": [
         {
             "name": "cloudy",
-            "image": "https://leekduck.com/assets/img/weather/cloudy.png"
+            "image": "https://pokemn.quest/images/weather/cloudy.png"
         }
     ],
-    "image": "https://cdn.leekduck.com/assets/img/pokemon_icons/pm23.icon.png",
+    "image": "https://pokemn.quest/images/pokemon/pm23.png",
     "imageWidth": 256,
     "imageHeight": 256,
     "imageType": "png"
@@ -79,7 +79,7 @@ You can validate data against this schema or use it to generate types for your a
 ```json
 {
     "name": "fire",
-    "image": "https://www.leekduck.com/assets/img/types/fire.png"
+    "image": "https://pokemn.quest/images/types/fire.png"
 }
 ```
 
@@ -123,7 +123,7 @@ You can validate data against this schema or use it to generate types for your a
 ```json
 {
     "name": "foggy",
-    "image": "https://www.leekduck.com/assets/img/weather/foggy.png"
+    "image": "https://pokemn.quest/images/weather/foggy.png"
 }
 ```
 

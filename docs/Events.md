@@ -12,28 +12,6 @@ You can validate data against this schema or use it to generate types for your a
 
 The Events endpoint provides comprehensive data about all Pokemon GO events, including Community Days, raid rotations, research events, GO Battle League seasons, Pokemon GO Tours, seasonal events, and more. Each event includes timing, featured Pokemon, bonuses, and type-specific content.
 
-This data is sourced from LeekDuck's event calendar and includes both current and upcoming events sorted chronologically by start date.
-
-## Update Frequency
-
-This endpoint is updated as new events are announced on LeekDuck. The scraper runs through a multi-stage pipeline:
-
-1. **Basic scrape** - Extracts event metadata (name, dates, image)
-2. **Detailed scrape** - Extracts event-specific content (Pokemon, raids, bonuses, etc.)
-3. **Combine details** - Merges detailed data with basic events and generates per-type files
-
-To update manually, run:
-```bash
-npm run pipeline
-```
-
-Or run individual stages:
-```bash
-npm run scrape           # Stage 1: Basic event metadata
-npm run detailedscrape   # Stage 2: Event details
-npm run combinedetails   # Stage 3: Merge and generate per-type files
-```
-
 ## Response Structure
 
 The endpoint returns a JSON array of event objects sorted chronologically by start date:
@@ -45,7 +23,7 @@ The endpoint returns a JSON array of event objects sorted chronologically by sta
     "name": "Into the Depths",
     "eventType": "event",
     "heading": "Event",
-    "image": "https://cdn.leekduck.com/...",
+    "image": "https://pokemn.quest/images/...",
     "start": "2026-01-27T10:00:00.000",
     "end": "2026-02-01T20:00:00.000",
     "pokemon": [...],
@@ -62,11 +40,11 @@ All events share these required core fields:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| **`eventID`** | `string` | Unique identifier for the event (URL slug from LeekDuck) |
+| **`eventID`** | `string` | Unique identifier for the event |
 | **`name`** | `string` | Display name of the event |
 | **`eventType`** | `string` | Type of the event (see [Event Types](#event-types) below) |
 | **`heading`** | `string` | Display heading/category for the event |
-| **`image`** | `string` | Event header/banner image URL (served from Vercel Blob or external CDN) |
+| **`image`** | `string` | Event header/banner image URL |
 | **`start`** | `string` | Event start date/time in ISO 8601 format (see [Date Format](#date-format)) |
 | **`end`** | `string` | Event end date/time in ISO 8601 format (see [Date Format](#date-format)) |
 
@@ -227,7 +205,7 @@ Each Pokemon object in the `pokemon` array has the following structure:
 ```json
 {
   "name": "Chinchou",
-  "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm170.icon.png",
+  "image": "https://pokemn.quest/images/pokemon/pm170.png",
   "source": "spawn",
   "canBeShiny": true,
   "imageWidth": 78,
@@ -253,7 +231,7 @@ Each raid object in the `raids` array has the following structure:
 ```json
 {
   "name": "Tornadus",
-  "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm641.icon.png",
+  "image": "https://pokemn.quest/images/pokemon/pm641.png",
   "tier": "5-Star",
   "imageWidth": 256,
   "imageHeight": 256,
@@ -363,13 +341,13 @@ All dates follow ISO 8601 format with millisecond precision:
   "name": "Into the Depths",
   "eventType": "event",
   "heading": "Event",
-  "image": "https://cdn.leekduck.com/assets/img/events/article-images/2026/2026-01-27-into-the-depths-2026/into-the-depths-2026.jpg",
+  "image": "https://pokemn.quest/images/events/into-the-depths-2026.jpg",
   "start": "2026-01-27T10:00:00.000",
   "end": "2026-02-01T20:00:00.000",
   "pokemon": [
     {
       "name": "Chinchou",
-      "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm170.icon.png",
+      "image": "https://pokemn.quest/images/pokemon/pm170.png",
       "source": "spawn",
       "canBeShiny": true,
       "imageWidth": 78,
@@ -378,7 +356,7 @@ All dates follow ISO 8601 format with millisecond precision:
     },
     {
       "name": "Lanturn",
-      "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm171.icon.png",
+      "image": "https://pokemn.quest/images/pokemon/pm171.png",
       "source": "spawn",
       "canBeShiny": true,
       "imageWidth": 91,
@@ -387,7 +365,7 @@ All dates follow ISO 8601 format with millisecond precision:
     },
     {
       "name": "Kyogre",
-      "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm382.icon.png",
+      "image": "https://pokemn.quest/images/pokemon/pm382.png",
       "source": "featured",
       "canBeShiny": true,
       "imageWidth": 150,
@@ -410,13 +388,13 @@ All dates follow ISO 8601 format with millisecond precision:
   "name": "Tornadus (Incarnate Forme) in 5-star Raid Battles",
   "eventType": "raid-battles",
   "heading": "Raid Battles",
-  "image": "https://cdn.leekduck.com/assets/img/events/events-default-img.jpg",
+  "image": "https://pokemn.quest/images/events/default.jpg",
   "start": "2026-01-25T10:00:00.000",
   "end": "2026-02-04T10:00:00.000",
   "raids": [
     {
       "name": "Tornadus",
-      "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm641.icon.png",
+      "image": "https://pokemn.quest/images/pokemon/pm641.png",
       "tier": "5-Star",
       "imageWidth": 256,
       "imageHeight": 256,
@@ -424,7 +402,7 @@ All dates follow ISO 8601 format with millisecond precision:
     },
     {
       "name": "Ampharos",
-      "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm181.icon.png",
+      "image": "https://pokemn.quest/images/pokemon/pm181.png",
       "tier": "Mega",
       "imageWidth": 256,
       "imageHeight": 256,
@@ -442,7 +420,7 @@ All dates follow ISO 8601 format with millisecond precision:
   "name": "Great League, Ultra League, and Master League | Precious Paths",
   "eventType": "go-battle-league",
   "heading": "Go Battle League",
-  "image": "https://cdn.leekduck.com/assets/img/events/go-battle-league-season-25-precious-paths.jpg",
+  "image": "https://pokemn.quest/images/events/go-battle-league-season-25.jpg",
   "start": "2026-01-27T21:00:00.000Z",
   "end": "2026-02-03T21:00:00.000Z",
   "battle": {
@@ -484,13 +462,13 @@ All dates follow ISO 8601 format with millisecond precision:
   "name": "Vulpix Community Day",
   "eventType": "community-day",
   "heading": "Community Day",
-  "image": "https://cdn.leekduck.com/assets/img/events/article-images/2026/2026-02-01-february-communityday2026/vulpix-community-day.jpg",
+  "image": "https://pokemn.quest/images/events/vulpix-community-day.jpg",
   "start": "2026-02-01T14:00:00.000",
   "end": "2026-02-01T17:00:00.000",
   "pokemon": [
     {
       "name": "Vulpix",
-      "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm37.icon.png",
+      "image": "https://pokemn.quest/images/pokemon/pm37.png",
       "source": "spawn",
       "canBeShiny": true,
       "imageWidth": 76,
@@ -506,7 +484,7 @@ All dates follow ISO 8601 format with millisecond precision:
   "shinies": [
     {
       "name": "Vulpix",
-      "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm37.icon.png",
+      "image": "https://pokemn.quest/images/pokemon/pm37.png",
       "canBeShiny": true
     }
   ]
@@ -639,16 +617,12 @@ fetch('https://pokemn.quest/data/eventTypes/community-day.min.json')
   });
 ```
 
-## Data Source
+## Data Collection
 
-Events data is scraped from:
-- **Primary source**: [LeekDuck Events Calendar](https://leekduck.com/events/)
-- **Date/time feed**: [LeekDuck Events JSON Feed](https://leekduck.com/feeds/events.json)
-
-The scraper extracts:
-1. **Basic metadata** from the events page (name, image, type)
-2. **Accurate dates** from the JSON feed (start/end times)
-3. **Detailed content** from individual event pages (Pokemon, raids, bonuses, etc.)
+The API provides comprehensive event data including:
+1. **Basic metadata** (name, image, type)
+2. **Accurate dates and times** (start/end times in ISO 8601 format)
+3. **Detailed content** (Pokemon, raids, bonuses, and event-specific features)
 
 ## Integration with Other Endpoints
 

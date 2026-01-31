@@ -15,7 +15,7 @@ const {
     extractEggPools,
     extractBonuses,
     parsePokemonFromText,
-    parsePriceFromText,
+    extractPrice,
     parseGBLCups,
     extractGoPassTiers
 } = require('../../utils/scraperUtils');
@@ -150,7 +150,7 @@ async function get(url, id, bkp) {
                     if (p.trim()) {
                         seasonData.masterworkResearch.push(p);
                         // Try to extract price from the text
-                        const price = parsePriceFromText(p);
+                        const price = extractPrice(p);
                         if (price) {
                             seasonData.masterworkPrice = price;
                         }

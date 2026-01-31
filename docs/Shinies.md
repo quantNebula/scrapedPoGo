@@ -16,12 +16,7 @@ This data is used internally by other endpoints (Raids, Eggs, Research) to augme
 
 ## Update Frequency
 
-This endpoint is updated with the same frequency as other endpoints, as it sources data directly from LeekDuck's shiny database.
-
-To update manually, run:
-```bash
-npm run scrapeshinies
-```
+This endpoint is updated with the same frequency as other endpoints.
 
 ## Response Structure
 
@@ -58,18 +53,18 @@ Each entry in the `shinies` array represents a Pokémon (or regional variant) wi
   "forms": [
     {
       "name": "f19",
-      "imageUrl": "https://cdn.jsdelivr.net/gh/PokeMiners/pogo_assets/Images/Pokemon%20-%20256x256/pm0001_00_pgo_fall2019_shiny.png",
+      "imageUrl": "https://pokemn.quest/images/pokemon/shiny/pm0001_fall2019.png",
       "width": 256,
       "height": 256
     },
     {
       "name": "11",
-      "imageUrl": "https://cdn.jsdelivr.net/gh/PokeMiners/pogo_assets/Images/Pokemon%20-%20256x256/pokemon_icon_001_00_shiny.png",
+      "imageUrl": "https://pokemn.quest/images/pokemon/shiny/pm001.png",
       "width": 256,
       "height": 256
     }
   ],
-  "imageUrl": "https://cdn.jsdelivr.net/gh/PokeMiners/pogo_assets/Images/Pokemon%20-%20256x256/pokemon_icon_001_00_shiny.png",
+  "imageUrl": "https://pokemn.quest/images/pokemon/shiny/pm001.png",
   "width": 256,
   "height": 256
 }
@@ -112,7 +107,7 @@ Regional variants are represented as separate entries with their own `dexNumber`
   "releasedDate": "2019/06/04",
   "family": "Vulpix_61",
   "typeCode": "_61",
-  "imageUrl": "https://cdn.jsdelivr.net/gh/PokeMiners/pogo_assets/Images/Pokemon%20-%20256x256/pokemon_icon_037_61_shiny.png",
+  "imageUrl": "https://pokemn.quest/images/pokemon/shiny/pm037_61.png",
   "width": 256,
   "height": 256
 }
@@ -132,11 +127,7 @@ The shiny data is automatically integrated into these endpoints:
 - **Eggs** (`/eggs.json`) - Each Pokémon has `canBeShiny` cross-referenced  
 - **Research** (`/research.json`) - Each encounter reward has `canBeShiny` cross-referenced
 
-The `canBeShiny` field in these endpoints uses **both**:
-1. The shiny icon indicator from LeekDuck's website
-2. The authoritative shiny data from this endpoint
-
-This dual-check ensures maximum accuracy.
+The `canBeShiny` field in these endpoints is cross-referenced with this authoritative shiny data to ensure accuracy.
 
 ## Example Usage
 

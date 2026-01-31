@@ -207,7 +207,7 @@ async function scrapeShinies() {
 					fullName += isotope;
 				}
 
-				const imageUrl = `https://cdn.jsdelivr.net/gh/PokeMiners/pogo_assets/${basePath}/${filename}`;
+				const imageUrl = `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/${basePath}/${filename}`;
 
 				entries.push({
 					dexNumber,

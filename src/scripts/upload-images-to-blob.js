@@ -16,14 +16,14 @@ dotenv.config();
 dotenv.config({ path: '.env.local' });
 
 // Configuration
-const DATA_DIR = path.join(__dirname, '../data');
+const DATA_DIR = path.join(__dirname, '..', '..', 'data');
 const PARALLEL_UPLOADS = 5;
 const DRY_RUN = process.argv.includes('--dry-run');
 const FORCE = process.argv.includes('--force');
 const VERBOSE = process.argv.includes('--verbose') || process.argv.includes('-v');
 
 // URL Mapping storage
-const URL_MAP_FILE = path.join(__dirname, '../data/blob-url-map.json');
+const URL_MAP_FILE = path.join(__dirname, '..', '..', 'data', 'blob-url-map.json');
 
 /**
  * Extract all image URLs from a nested object
