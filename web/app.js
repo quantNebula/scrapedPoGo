@@ -211,7 +211,14 @@ function renderStatus() {
   stats.forEach((stat) => {
     const badge = document.createElement("div");
     badge.className = "badge";
-    badge.innerHTML = `<strong>${stat.value}</strong> ${stat.label}`;
+
+    const valueStrong = document.createElement("strong");
+    valueStrong.textContent = stat.value;
+    badge.appendChild(valueStrong);
+
+    const labelSpan = document.createTextNode(` ${stat.label}`);
+    badge.appendChild(labelSpan);
+
     elements.status.appendChild(badge);
   });
 }
@@ -450,7 +457,15 @@ function renderDetails(record) {
   entries.forEach(([key, value]) => {
     const row = document.createElement("div");
     row.className = "detail__row";
-    row.innerHTML = `<span>${key}</span><div>${formatValue(value)}</div>`;
+
+    const label = document.createElement("span");
+    label.textContent = key;
+    row.appendChild(label);
+
+    const content = document.createElement("div");
+    content.textContent = formatValue(value);
+    row.appendChild(content);
+
     elements.detailBody.appendChild(row);
   });
 }
