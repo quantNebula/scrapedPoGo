@@ -339,7 +339,18 @@ function renderGrid() {
     card.appendChild(title);
     card.appendChild(meta);
 
-    card.addEventListener("click", () => renderDetails(record));
+    // Make card interactive for keyboard users
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+
+    const activate = () => renderDetails(record);
+    card.addEventListener("click", activate);
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        activate();
+      }
+    });
 
     elements.grid.appendChild(card);
   });
