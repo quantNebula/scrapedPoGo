@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-01-31T08:07:01.644Z",
+  "generatedAt": "2026-01-31T08:10:18.990Z",
   "pipeline": {
     "status": "critical",
-    "lastSuccessful": "2026-01-31T08:07:01.644Z"
+    "lastSuccessful": "2026-01-31T08:10:18.990Z"
   },
   "datasets": {
     "events": {
