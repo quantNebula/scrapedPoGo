@@ -45,7 +45,7 @@ const event = require('../pages/detailed/event')
  * - go-battle-league -> gobattleleague
  * - season -> season
  * - pokemon-go-tour -> gotour
- * - timed-research, special-research -> timedresearch
+ * - timed-research, special-research, research-day -> timedresearch
  * - max-battles -> maxbattles
  * - max-mondays -> maxmondays
  * - go-pass -> gopass
@@ -126,6 +126,136 @@ async function main()
                         bkp = bkp.concat(typeArray);
                     }
                 });
+    https.get("https://cdn.jsdelivr.net/gh/quantNebula/scrapedPoGo@main/data/events.min.json", (res) =>
+    {
+        let body = "";
+        res.on("data", (chunk) => { body += chunk; });
+    
+        res.on("end", async () => {
+            try
+            {
+                let bkpData = JSON.parse(body);
+                
+                // Flatten backup data if it's in new structure
+                let bkp = [];
+                if (bkpData && typeof bkpData === 'object') {
+                    if (Array.isArray(bkpData)) {
+                        // Old structure: already an array
+                        bkp = bkpData;
+                    } else {
+                        // New structure: { "event-type": [...], "another-type": [...] }
+                        Object.values(bkpData).forEach(typeArray => {
+                            if (Array.isArray(typeArray)) {
+                                bkp = bkp.concat(typeArray);
+                            }
+                        });
+                    }
+                }
+
+                // Helper to process a single event
+                async function processEvent(e, bkp) {
+                    // Construct the event link from eventID
+                    const link = `https://www.leekduck.com/events/${e.eventID}/`;
+                    const p = [];
+                    
+                    // get generic extra data independend from event type
+                    p.push(generic.get(link, e.eventID, bkp));
+
+                    // get event type specific extra data
+                    if (e.eventType == "research-breakthrough")
+                    {
+                        p.push(breakthrough.get(link, e.eventID, bkp));
+                    }
+                    else if (e.eventType == "pokemon-spotlight-hour")
+                    {
+                        p.push(spotlight.get(link, e.eventID, bkp));
+                    }
+                    else if (e.eventType == "community-day")
+                    {
+                        p.push(communityday.get(link, e.eventID, bkp));
+                    }
+                    else if (e.eventType == "raid-battles")
+                    {
+                        p.push(raidbattles.get(link, e.eventID, bkp));
+                    }
+                    else if (e.eventType == "raid-hour")
+                    {
+                        p.push(raidhour.get(link, e.eventID, bkp));
+                    }
+                    else if (e.eventType == "raid-day")
+                    {
+                        p.push(raidday.get(link, e.eventID, bkp));
+                    }
+                    else if (e.eventType == "team-go-rocket" || e.eventType == "go-rocket-takeover")
+                    {
+                        p.push(teamgorocket.get(link, e.eventID, bkp));
+                    }
+                    else if (e.eventType == "go-battle-league")
+                    {
+                        p.push(gobattleleague.get(link, e.eventID, bkp));
+                    }
+                    else if (e.eventType == "season")
+                    {
+                        p.push(season.get(link, e.eventID, bkp));
+                    }
+                    else if (e.eventType == "pokemon-go-tour")
+                    {
+                        p.push(gotour.get(link, e.eventID, bkp));
+                    }
+                    else if (e.eventType == "timed-research" || e.eventType == "special-research" || e.eventType == "research-day")
+                    {
+                        p.push(timedresearch.get(link, e.eventID, bkp));
+                    }
+                    else if (e.eventType == "max-battles")
+                    {
+                        p.push(maxbattles.get(link, e.eventID, bkp));
+                    }
+                    else if (e.eventType == "max-mondays")
+                    {
+                        p.push(maxmondays.get(link, e.eventID, bkp));
+                    }
+                    else if (e.eventType == "go-pass")
+                    {
+                        p.push(gopass.get(link, e.eventID, bkp));
+                    }
+                    else if (e.eventType == "pokestop-showcase")
+                    {
+                        p.push(pokestopshowcase.get(link, e.eventID, bkp));
+                    }
+                    else if (e.eventType == "research")
+                    {
+                        p.push(research.get(link, e.eventID, bkp));
+                    }
+                    else if (e.eventType == "event")
+                    {
+                        p.push(event.get(link, e.eventID, bkp));
+                    }
+
+                    await Promise.all(p);
+                }
+
+                // Helper for concurrency
+                async function runWithConcurrency(items, limit, fn) {
+                    const executing = [];
+                    const promises = [];
+
+                    for (const item of items) {
+                        const p = Promise.resolve().then(() => fn(item));
+                        promises.push(p);
+
+                        const e = p.then(() => executing.splice(executing.indexOf(e), 1));
+                        executing.push(e);
+
+                        if (executing.length >= limit) {
+                            await Promise.race(executing);
+                        }
+                    }
+                    return Promise.all(promises);
+                }
+
+                // Run with concurrency limit of 5
+                await runWithConcurrency(events, 5, (e) => processEvent(e, bkp));
+                logger.success(`Completed scraping detailed event pages`);
             }
         }
 
@@ -157,3 +287,4 @@ main().catch(e => {
     logger.error("ERROR: " + e);
     process.exit(1);
 });
+}

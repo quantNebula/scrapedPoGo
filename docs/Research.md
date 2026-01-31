@@ -21,7 +21,7 @@ You can validate data against this schema or use it to generate types for your a
             "type": "item",
             "name": "Mysterious Component",
             "quantity": 1,
-            "image": "https://cdn.leekduck.com/assets/img/items/Mysterious%20Component.png",
+            "image": "https://pokemn.quest/images/items/mysterious-component.png",
             "imageWidth": 512,
             "imageHeight": 512,
             "imageType": "png"
@@ -40,7 +40,7 @@ You can validate data against this schema or use it to generate types for your a
         {
             "type": "encounter",
             "name": "Fidough",
-            "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm926.icon.png",
+            "image": "https://pokemn.quest/images/pokemon/pm926.png",
             "canBeShiny": true,
             "combatPower": {
                 "min": 389,
@@ -73,7 +73,7 @@ Rewards can be one of three types: `encounter`, `item`, or `resource`. The field
 {
     "type": "encounter",
     "name": "Fidough",
-    "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm926.icon.png",
+    "image": "https://pokemn.quest/images/pokemon/pm926.png",
     "canBeShiny": true,
     "combatPower": {
         "min": 389,
@@ -92,7 +92,7 @@ Rewards can be one of three types: `encounter`, `item`, or `resource`. The field
     "type": "item",
     "name": "Mysterious Component",
     "quantity": 1,
-    "image": "https://cdn.leekduck.com/assets/img/items/Mysterious%20Component.png",
+    "image": "https://pokemn.quest/images/items/mysterious-component.png",
     "imageWidth": 512,
     "imageHeight": 512,
     "imageType": "png"

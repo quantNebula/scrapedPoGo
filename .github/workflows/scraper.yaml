@@ -44,6 +44,12 @@ jobs:
         run: npm run combinedetails
         continue-on-error: true
       
+      - name: Generate data quality metrics
+        run: |
+          echo "📊 Generating data quality metrics..."
+          npm run metrics:generate
+        continue-on-error: true
+      
       - name: Upload new images to Blob Storage
         if: env.BLOB_READ_WRITE_TOKEN != ''
         run: |

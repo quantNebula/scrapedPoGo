@@ -39,11 +39,19 @@ const state = {
   query: "",
   sort: "start-asc",
   filters: new Set(),
+  view: "list",
+  calendarDate: new Date(),
 };
 
 const elements = {
   tabs: document.getElementById("tabs"),
   grid: document.getElementById("grid"),
+  calendar: document.getElementById("calendar"),
+  calendarGrid: document.getElementById("calendarGrid"),
+  calendarMonth: document.getElementById("calendarMonth"),
+  prevMonth: document.getElementById("prevMonth"),
+  nextMonth: document.getElementById("nextMonth"),
+  viewToggle: document.getElementById("viewToggle"),
   status: document.getElementById("status"),
   filters: document.getElementById("filters"),
   searchInput: document.getElementById("searchInput"),
@@ -282,6 +290,84 @@ function sortRecords(records) {
   return sorted;
 }
 
+function renderCalendar() {
+  const date = state.calendarDate;
+  const year = date.getFullYear();
+  const month = date.getMonth();
+
+  elements.calendarMonth.textContent = date.toLocaleString("default", {
+    month: "long",
+    year: "numeric",
+  });
+
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const startDayOfWeek = firstDay.getDay(); // 0 = Sunday
+  const daysInMonth = lastDay.getDate();
+
+  const grid = elements.calendarGrid;
+  grid.innerHTML = "";
+
+  // Day headers
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  days.forEach((d) => {
+    const el = document.createElement("div");
+    el.className = "calendar-day-header";
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  // Empty cells for previous month
+  for (let i = 0; i < startDayOfWeek; i++) {
+    const el = document.createElement("div");
+    el.className = "calendar-day other-month";
+    grid.appendChild(el);
+  }
+
+  // Days
+  const dataset = datasetConfig.find((item) => item.id === "events");
+  const records = state.data.events || [];
+  const events = filterRecords(records, dataset);
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const currentDayStart = new Date(year, month, d).getTime();
+    const currentDayEnd = new Date(year, month, d, 23, 59, 59).getTime();
+    const isToday =
+      new Date().toDateString() === new Date(year, month, d).toDateString();
+
+    const el = document.createElement("div");
+    el.className = `calendar-day${isToday ? " today" : ""}`;
+
+    const dateLabel = document.createElement("div");
+    dateLabel.className = "calendar-date";
+    dateLabel.textContent = d;
+    el.appendChild(dateLabel);
+
+    const daysEvents = events.filter((e) => {
+      const eStart = new Date(e.start).getTime();
+      const eEnd = new Date(e.end).getTime();
+      if (!eStart || !eEnd) return false;
+      return Math.max(eStart, currentDayStart) <= Math.min(eEnd, currentDayEnd);
+    });
+
+    daysEvents.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+
+    daysEvents.forEach(e => {
+        const eventEl = document.createElement("div");
+        eventEl.className = "calendar-event";
+        eventEl.textContent = e.name;
+        eventEl.title = `${e.name}\n${formatDate(e.start)} - ${formatDate(e.end)}`;
+        eventEl.addEventListener("click", (evt) => {
+            evt.stopPropagation();
+            renderDetails(e);
+        });
+        el.appendChild(eventEl);
+    });
+
+    grid.appendChild(el);
+  }
+}
+
 function renderGrid() {
   const dataset = datasetConfig.find((item) => item.id === state.active);
   const records = state.data[state.active] || [];
@@ -339,7 +425,18 @@ function renderGrid() {
     card.appendChild(title);
     card.appendChild(meta);
 
-    card.addEventListener("click", () => renderDetails(record));
+    // Make card interactive for keyboard users
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+
+    const activate = () => renderDetails(record);
+    card.addEventListener("click", activate);
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        activate();
+      }
+    });
 
     elements.grid.appendChild(card);
   });
@@ -368,7 +465,27 @@ function render() {
   renderTabs();
   renderStatus();
   renderFilters();
-  renderGrid();
+
+  const showCalendar = state.active === 'events' && state.view === 'calendar';
+
+  if (state.active === 'events') {
+    elements.viewToggle.style.display = 'flex';
+    Array.from(elements.viewToggle.children).forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.view === state.view);
+    });
+  } else {
+    elements.viewToggle.style.display = 'none';
+  }
+
+  if (showCalendar) {
+    elements.grid.style.display = 'none';
+    elements.calendar.style.display = 'flex';
+    renderCalendar();
+  } else {
+    elements.grid.style.display = 'grid';
+    elements.calendar.style.display = 'none';
+    renderGrid();
+  }
 }
 
 function openConfig() {
@@ -403,6 +520,23 @@ function init() {
     event.preventDefault();
     saveConfig();
     elements.configDialog.close();
+  });
+
+  elements.viewToggle.addEventListener("click", (e) => {
+    if (e.target.tagName === "BUTTON") {
+        state.view = e.target.dataset.view;
+        render();
+    }
+  });
+
+  elements.prevMonth.addEventListener("click", () => {
+    state.calendarDate = new Date(state.calendarDate.getFullYear(), state.calendarDate.getMonth() - 1, 1);
+    renderCalendar();
+  });
+
+  elements.nextMonth.addEventListener("click", () => {
+    state.calendarDate = new Date(state.calendarDate.getFullYear(), state.calendarDate.getMonth() + 1, 1);
+    renderCalendar();
   });
 
   render();

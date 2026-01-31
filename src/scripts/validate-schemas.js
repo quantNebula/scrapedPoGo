@@ -30,8 +30,8 @@ let successfulValidations = 0;
 console.log('🔍 Validating data files against schemas...\n');
 
 for (const { schema, data } of validations) {
-  const schemaPath = path.join(__dirname, '..', schema);
-  const dataPath = path.join(__dirname, '..', data);
+  const schemaPath = path.join(__dirname, '..', '..', schema);
+  const dataPath = path.join(__dirname, '..', '..', data);
   
   // Check if files exist
   if (!fs.existsSync(schemaPath)) {

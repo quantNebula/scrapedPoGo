@@ -20,7 +20,7 @@ You can validate data against this schema or use it to generate types for your a
     "firstPokemon": [
         {
             "name": "Magikarp",
-            "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm129.icon.png",
+            "image": "https://pokemn.quest/images/pokemon/pm129.png",
             "types": [
                 "water"
             ],
@@ -38,7 +38,7 @@ You can validate data against this schema or use it to generate types for your a
     "secondPokemon": [
         {
             "name": "Cradily",
-            "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm346.icon.png",
+            "image": "https://pokemn.quest/images/pokemon/pm346.png",
             "types": [
                 "rock",
                 "grass"
@@ -59,7 +59,7 @@ You can validate data against this schema or use it to generate types for your a
     "thirdPokemon": [
         {
             "name": "Tyranitar",
-            "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm248.icon.png",
+            "image": "https://pokemn.quest/images/pokemon/pm248.png",
             "types": [
                 "rock",
                 "dark"
@@ -104,7 +104,7 @@ You can validate data against this schema or use it to generate types for your a
 ```json
 {
     "name": "Magikarp",
-    "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm129.icon.png",
+    "image": "https://pokemn.quest/images/pokemon/pm129.png",
     "types": [
         "water"
     ],

@@ -625,14 +625,16 @@ async function extractResearchTasks(doc, researchType = 'special') {
  * Supports USD ($), EUR (€), and GBP (£) formats.
  * 
  * @param {string} text - Text that may contain price information
- * @returns {{price: number, currency: string}|null} Price object or null if not found
+ * @returns {{price: number, amount: number, currency: string}|null} Price object or null if not found
  * 
  * @example
- * extractPrice('Get access for US$4.99!'); // { price: 4.99, currency: 'USD' }
- * extractPrice('Only €2.99'); // { price: 2.99, currency: 'EUR' }
+ * extractPrice('Get access for US$4.99!'); // { price: 4.99, amount: 4.99, currency: 'USD' }
+ * extractPrice('Only €2.99'); // { price: 2.99, amount: 2.99, currency: 'EUR' }
  * extractPrice('No price here'); // null
  */
 function extractPrice(text) {
+    if (!text) return null;
+    
     const patterns = [
         /US\$(\d+\.?\d*)/,
         /\$(\d+\.?\d*)\s*USD/i,
@@ -648,8 +650,10 @@ function extractPrice(text) {
             if (text.includes('€')) currency = 'EUR';
             if (text.includes('£')) currency = 'GBP';
             
+            const value = parseFloat(match[1]);
             return {
-                price: parseFloat(match[1]),
+                price: value,
+                amount: value, // Alias for backwards compatibility
                 currency
             };
         }
@@ -880,35 +884,13 @@ function normalizeDatePair(start, end) {
 // ============================================================================
 
 /**
- * Parses a price from text containing USD amounts.
- * 
- * @param {string} text - Text containing price info (e.g., "For US$7.99 (or the equivalent...)")
- * @returns {{amount: number, currency: string}|null} Price object or null if no price found
- * 
- * @example
- * parsePriceFromText("For US$7.99 (or the equivalent pricing tier)")
- * // Returns: { amount: 7.99, currency: 'USD' }
+ * @deprecated Use extractPrice instead (returns same shape with both 'price' and 'amount' fields)
  */
-function parsePriceFromText(text) {
-    if (!text) return null;
-    
-    // Match US$X.XX pattern
-    const usdMatch = text.match(/US\$(\d+\.?\d*)/);
-    if (usdMatch) {
-        return { amount: parseFloat(usdMatch[1]), currency: 'USD' };
-    }
-    
-    // Match $X.XX pattern (assume USD)
-    const dollarMatch = text.match(/\$(\d+\.?\d*)/);
-    if (dollarMatch) {
-        return { amount: parseFloat(dollarMatch[1]), currency: 'USD' };
-    }
-    
-    return null;
-}
+const parsePriceFromText = extractPrice;
 
 /**
  * Parses bonus multiplier information from text.
+ * @internal Currently unused - available for future scrapers
  * 
  * @param {string} text - Bonus text (e.g., "2× Catch XP", "3x Stardust")
  * @returns {{multiplier: number, bonusType: string}|null} Parsed bonus or null
@@ -1060,6 +1042,7 @@ function parsePokemonFromText(text) {
 
 /**
  * Parses a deadline date from text.
+ * @internal Currently unused - available for future scrapers
  * 
  * @param {string} text - Text containing deadline (e.g., "must be claimed before February 8, 2026 at 8 pm local time")
  * @returns {{date: string, isLocal: boolean}|null} Parsed date info or null
@@ -1242,6 +1225,49 @@ async function fetchJson(url, timeout = 30000) {
 async function getJSDOM(url) {
     const html = await fetchUrl(url);
     return new JSDOM(html, { url });
+// Event Deduplication
+// ============================================================================
+
+/**
+ * Deduplicates events by merging entries with the same eventID.
+ * Uses an O(N) approach with a Map to handle large datasets efficiently.
+ *
+ * @param {Array<Object>} events - Array of event objects
+ * @returns {Array<Object>} Deduplicated array of events
+ */
+function deduplicateEvents(events) {
+    const eventsByID = new Map();
+    events.forEach(e => {
+        if (!eventsByID.has(e.eventID)) {
+            eventsByID.set(e.eventID, []);
+        }
+        eventsByID.get(e.eventID).push(e);
+    });
+
+    const deduplicatedEvents = [];
+
+    for (const duplicates of eventsByID.values()) {
+        if (duplicates.length > 1) {
+            const mergedEvent = duplicates[0]; // Use the first occurrence
+
+            if (duplicates[0].start)
+            {
+                mergedEvent.start = duplicates[0].start;
+                mergedEvent.end = duplicates[1].end;
+            }
+            else
+            {
+                mergedEvent.start = duplicates[1].start;
+                mergedEvent.end = duplicates[0].end;
+            }
+
+            deduplicatedEvents.push(mergedEvent);
+        } else {
+            deduplicatedEvents.push(duplicates[0]);
+        }
+    }
+
+    return deduplicatedEvents;
 }
 
 // ============================================================================
@@ -1297,5 +1323,8 @@ module.exports = {
     parseGBLCups,
     parsePokemonFromText,
     parseDeadlineFromText,
-    extractGoPassTiers
+    extractGoPassTiers,
+
+    // Event processing
+    deduplicateEvents
 };

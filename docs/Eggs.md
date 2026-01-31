@@ -17,7 +17,7 @@ You can validate data against this schema or use it to generate types for your a
     "name": "Bulbasaur",
     "eggType": "1 km",
     "isAdventureSync": false,
-    "image": "https://cdn.leekduck.com/assets/img/pokemon_icons_crop/pm1.icon.png",
+    "image": "https://pokemn.quest/images/pokemon/pm1.png",
     "canBeShiny": true,
     "combatPower": {
         "min": 637,
