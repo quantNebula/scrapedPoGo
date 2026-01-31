@@ -157,7 +157,7 @@ function get()
 
             var types = dom.window.document.querySelectorAll('.task-category');
 
-            var research = [] 
+            var researchMap = new Map();
             
             types.forEach (_e =>
             {
@@ -245,11 +245,12 @@ function get()
 
                     if (rewards.length > 0)
                     {
-                        if (research.filter(r => r.text == text && r.type == type).length > 0)
+                        const key = `${text}|${type}`;
+                        if (researchMap.has(key))
                         {
-                            var foundResearch = research.findIndex(fr => { return fr.text == text && fr.type == type });
+                            const existing = researchMap.get(key);
                             rewards.forEach(rw => {
-                                research[foundResearch].rewards.push(rw);
+                                existing.rewards.push(rw);
                             });
                         }
                         else
@@ -258,11 +259,13 @@ function get()
                             if (categoryIcon) {
                                 taskData.categoryIcon = categoryIcon;
                             }
-                            research.push(taskData);
+                            researchMap.set(key, taskData);
                         }
                     }
                 });
             });
+
+            var research = Array.from(researchMap.values());
 
             // Collect all image URLs from rewards
             const imageUrls = [];
