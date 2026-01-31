@@ -26,7 +26,7 @@ function runBenchmark() {
 
     console.log(`Running benchmark with ${count} items...`);
 
-    // --- Array as Object (Current) ---
+    // --- Array as Object (Legacy) ---
     const startArray = performance.now();
     const eventDatesArray = [];
     for (var i = 0; i < feedJson.length; i++) {
