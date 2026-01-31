@@ -22,7 +22,7 @@
   "license": "MIT",
   "dependencies": {
     "@vercel/blob": "^2.0.1",
-    "dotenv": "^16.4.7",
+    "dotenv": "^17.2.3",
     "image-size": "^2.0.2",
     "jsdom": "27.4.0",
     "moment": "latest"
