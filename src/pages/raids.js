@@ -63,27 +63,13 @@ const { transformUrls } = require('../utils/blobUrls');
  * const status = determineEventStatus("Giratina", false);
  * // Returns "ongoing" if Giratina raid event is currently active
  */
-function determineEventStatus(bossName, isShadowRaid) {
+function determineEventStatus(bossName, isShadowRaid, events) {
     try {
-        // Try to load events data
-        if (!fs.existsSync('data/events.min.json')) {
+        if (!events || !Array.isArray(events)) {
             return 'unknown';
         }
-        
-        const eventsData = JSON.parse(fs.readFileSync('data/events.min.json', 'utf8'));
+
         const now = new Date();
-        
-        // Flatten eventType-keyed structure into array if needed
-        let events = [];
-        if (Array.isArray(eventsData)) {
-            events = eventsData;
-        } else if (eventsData && typeof eventsData === 'object') {
-            Object.values(eventsData).forEach(typeArray => {
-                if (Array.isArray(typeArray)) {
-                    events = events.concat(typeArray);
-                }
-            });
-        }
         
         // Look for raid-related events that match this boss
         for (const event of events) {
@@ -203,6 +189,26 @@ function get() {
                 
                 // Load shiny data for cross-referencing
                 const shinyMap = loadShinyData();
+
+                // Load events data for status determination
+                let events = [];
+                try {
+                    if (fs.existsSync('data/events.min.json')) {
+                        const eventsData = JSON.parse(fs.readFileSync('data/events.min.json', 'utf8'));
+                        // Flatten eventType-keyed structure into array if needed
+                        if (Array.isArray(eventsData)) {
+                            events = eventsData;
+                        } else if (eventsData && typeof eventsData === 'object') {
+                            Object.values(eventsData).forEach(typeArray => {
+                                if (Array.isArray(typeArray)) {
+                                    events = events.concat(typeArray);
+                                }
+                            });
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading events data:', error.message);
+                }
                 
                 const raidBosses = dom.window.document.querySelectorAll('.raid-bosses, .shadow-raid-bosses');
 
@@ -240,7 +246,7 @@ function get() {
                             };
                             
                             // Determine event status based on events data
-                            boss.eventStatus = determineEventStatus(boss.name, isShadowRaid);
+                            boss.eventStatus = determineEventStatus(boss.name, isShadowRaid, events);
 
                             // Image
                             boss.image = card.querySelector('.boss-img img')?.src || "";
