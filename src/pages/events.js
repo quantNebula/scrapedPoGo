@@ -45,14 +45,14 @@ async function get()
         // Fetch event dates from JSON feed
         const feedJson = await fetchJson("https://leekduck.com/feeds/events.json");
         
-        const eventDates = [];
+        const eventDates = new Map();
         for (var i = 0; i < feedJson.length; i++)
         {
             var id = feedJson[i].eventID;
             var start = feedJson[i].start;
             var end = feedJson[i].end;
 
-            eventDates[id] = { "start": start, "end": end };
+            eventDates.set(id, { "start": start, "end": end });
         }
 
         try {
@@ -77,7 +77,7 @@ async function get()
                     var eventID = link.split("/events/")[1];
                     eventID = eventID.substring(0, eventID.length - 1);
 
-                    if (!(eventID in eventDates))
+                    if (!eventDates.has(eventID))
                     {
                         logger.warn(`Event '${eventID}' not present in events feed. Date values will be null.`);
                     }
@@ -92,8 +92,8 @@ async function get()
                         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
                         .join(' ');
 
-                    var start = eventDates[eventID]?.start || null;
-                    var end = eventDates[eventID]?.end || null;
+                    var start = eventDates.get(eventID)?.start || null;
+                    var end = eventDates.get(eventID)?.end || null;
 
                     // Normalize dates: convert timezone offsets to UTC, preserve local times
                     const normalized = normalizeDatePair(start, end);
