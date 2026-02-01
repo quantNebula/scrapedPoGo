@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-01-31T16:09:56.799Z",
+  "generatedAt": "2026-02-01T00:49:02.721Z",
   "pipeline": {
     "status": "critical",
-    "lastSuccessful": "2026-01-31T16:09:56.799Z"
+    "lastSuccessful": "2026-02-01T00:49:02.721Z"
   },
   "datasets": {
     "events": {
-      "recordCount": 59,
-      "lastUpdated": "2026-01-31T16:09:56.637Z",
-      "completeness": 11.5,
+      "recordCount": 60,
+      "lastUpdated": "2026-02-01T00:49:02.566Z",
+      "completeness": 11.7,
       "issues": [
-        "85% missing pokemon",
-        "86% missing bonuses",
+        "83% missing pokemon",
+        "87% missing bonuses",
         "83% missing raids",
         "95% missing research",
         "93% missing eggs"
@@ -20,7 +20,7 @@
     },
     "raids": {
       "recordCount": 17,
-      "lastUpdated": "2026-01-31T16:09:48.262Z",
+      "lastUpdated": "2026-02-01T00:48:54.131Z",
       "completeness": 76.5,
       "issues": [
         "94% missing form"
@@ -28,29 +28,29 @@
       "status": "degraded"
     },
     "research": {
-      "recordCount": 57,
-      "lastUpdated": "2026-01-31T16:09:49.517Z",
+      "recordCount": 60,
+      "lastUpdated": "2026-02-01T00:48:55.564Z",
       "completeness": 100,
       "issues": [],
       "status": "healthy"
     },
     "eggs": {
       "recordCount": 89,
-      "lastUpdated": "2026-01-31T16:09:48.793Z",
+      "lastUpdated": "2026-02-01T00:48:55.246Z",
       "completeness": 100,
       "issues": [],
       "status": "healthy"
     },
     "rocketLineups": {
       "recordCount": 26,
-      "lastUpdated": "2026-01-31T16:09:47.487Z",
+      "lastUpdated": "2026-02-01T00:48:53.590Z",
       "completeness": 100,
       "issues": [],
       "status": "healthy"
     },
     "shinies": {
       "recordCount": 1044,
-      "lastUpdated": "2026-01-31T16:09:49.822Z",
+      "lastUpdated": "2026-02-01T00:48:55.864Z",
       "completeness": 25,
       "issues": [
         "100% missing released",
@@ -62,8 +62,8 @@
   },
   "summary": {
     "overallHealth": "critical",
-    "totalRecords": 1292,
-    "avgCompleteness": 68.8,
+    "totalRecords": 1296,
+    "avgCompleteness": 68.9,
     "criticalIssues": 2,
     "warnings": 1
   }
